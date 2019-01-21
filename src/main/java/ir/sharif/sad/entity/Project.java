@@ -1,9 +1,12 @@
 package ir.sharif.sad.entity;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
