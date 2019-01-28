@@ -7,6 +7,7 @@ import ir.sharif.sad.repository.FoundationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.security.RolesAllowed;
 
 @RepositoryRestController
+@Secured("ROLE_FOUNDATION")
 @RequestMapping("/foundations/")
 public class FoundationController {
     private final FoundationRepository foundationRepository;
@@ -23,7 +25,6 @@ public class FoundationController {
         this.foundationRepository = foundationRepository;
     }
 
-    @RolesAllowed("ROLE_FOUNDATION")
     @PostMapping("/sign_up")
     public ResponseEntity signUp(@RequestBody FoundationUserDto foundationDto){
         return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName())));

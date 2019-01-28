@@ -73,9 +73,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll().anyRequest().authenticated()
                 .antMatchers("/register/**").permitAll().anyRequest().authenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/foundation/**").hasRole("FOUNDATION")
-                .antMatchers("/volunteer/**").hasRole("VOLUNTEER")
+                .antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated()
+                .antMatchers("/foundation/**").hasRole("FOUNDATION").anyRequest().authenticated()
+                .antMatchers("/volunteer/**").hasRole("VOLUNTEER").anyRequest().authenticated()
                 .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;

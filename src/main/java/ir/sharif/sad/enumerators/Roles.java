@@ -1,9 +1,9 @@
 package ir.sharif.sad.enumerators;
 
 public enum Roles {
-    ADMIN("ADMIN"),
-    FOUNDATION("FOUNDATION"),
-    VOLUNTEER("VOLUNTEER");
+    ADMIN("ROLE_ADMIN"),
+    FOUNDATION("ROLE_FOUNDATION"),
+    VOLUNTEER("ROLE_VOLUNTEER");
 
     private final String value;
 
