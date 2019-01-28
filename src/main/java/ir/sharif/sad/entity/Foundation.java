@@ -15,6 +15,7 @@ public class Foundation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
+    private String email;
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Charity> charities;
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
