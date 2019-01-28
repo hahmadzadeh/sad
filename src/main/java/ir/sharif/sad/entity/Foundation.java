@@ -21,7 +21,8 @@ public class Foundation {
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Project> projects;
 
-    public Foundation(String name) {
+    public Foundation(String name, String email) {
         this.name = name;
+        this.email = email;
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +29,8 @@ public class FoundationController {
 
     @PostMapping("/sign_up")
     public ResponseEntity signUp(@RequestBody FoundationUserDto foundationDto){
-        return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName())));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName(), auth.getName())));
     }
-
+        
 }
