@@ -70,7 +70,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .and().logout();
         http.csrf().disable().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
                 .and().authorizeRequests()
-                .antMatchers("/user/**").hasRole("ADMIN")
+                .antMatchers("/").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/registration/**").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/foundation/**").hasRole("FOUNDATION")
+                .antMatchers("/volunteer/**").hasRole("VOLUNTEER")
                 .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;

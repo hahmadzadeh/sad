@@ -26,6 +26,4 @@ public class FoundationController {
         return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName())));
     }
 
-
-
 }
