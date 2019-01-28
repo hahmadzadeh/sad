@@ -1,7 +1,7 @@
 package ir.sharif.sad.controller;
 
 
-import ir.sharif.sad.dto.FoundationDto;
+import ir.sharif.sad.dto.FoundationUserDto;
 import ir.sharif.sad.entity.Foundation;
 import ir.sharif.sad.repository.FoundationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RepositoryRestController
 @RequestMapping("/foundations/")
 public class FoundationController {
-    FoundationRepository foundationRepository;
+    private final FoundationRepository foundationRepository;
 
     @Autowired
     public FoundationController(FoundationRepository foundationRepository){
@@ -22,7 +22,7 @@ public class FoundationController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity signUp(@RequestBody FoundationDto foundationDto){
+    public ResponseEntity signUp(@RequestBody FoundationUserDto foundationDto){
         return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName())));
     }
 

@@ -2,6 +2,7 @@ package ir.sharif.sad.service;
 
 import ir.sharif.sad.entity.Role;
 import ir.sharif.sad.entity.User;
+import ir.sharif.sad.enumerators.Roles;
 import ir.sharif.sad.repository.RoleRepository;
 import ir.sharif.sad.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User saveUser(User user, String role) {
+    public User saveUser(User user, Roles role) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRepository.findByRole(role);
+        Role userRole = roleRepository.findByRole(role.toString());
         user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
         return userRepository.save(user);
     }
