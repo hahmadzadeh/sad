@@ -4,9 +4,11 @@ import ir.sharif.sad.entity.User;
 import ir.sharif.sad.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,8 +32,16 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResponseEntity home() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth instanceof  AnonymousAuthenticationToken){
+            System.out.println("hi");
+        }
         User user = userService.findUserByEmail(auth.getName());
         return ResponseEntity.ok("welcome");
+    }
+
+    @PostMapping("/admin")
+    public String what(){
+        return "what?";
     }
 
 
