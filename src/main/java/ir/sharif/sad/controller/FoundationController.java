@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.security.RolesAllowed;
+
 @RepositoryRestController
 @RequestMapping("/foundations/")
 public class FoundationController {
@@ -21,6 +23,7 @@ public class FoundationController {
         this.foundationRepository = foundationRepository;
     }
 
+    @RolesAllowed("ROLE_FOUNDATION")
     @PostMapping("/sign_up")
     public ResponseEntity signUp(@RequestBody FoundationUserDto foundationDto){
         return ResponseEntity.ok(foundationRepository.save(new Foundation(foundationDto.getName())));

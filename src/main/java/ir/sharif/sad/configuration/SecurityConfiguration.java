@@ -71,8 +71,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
                 .and().authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/registration/**").permitAll()
+                .antMatchers("/login").permitAll().anyRequest().authenticated()
+                .antMatchers("/register/**").permitAll().anyRequest().authenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/foundation/**").hasRole("FOUNDATION")
                 .antMatchers("/volunteer/**").hasRole("VOLUNTEER")
@@ -83,6 +83,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+        web.ignoring().antMatchers("/register/**");
     }
 }
