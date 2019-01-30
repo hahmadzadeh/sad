@@ -1,0 +1,37 @@
+html, body, div, label, span, a {
+    font-family: 'B Zar';
+    direction: rtl;
+}
+
+table {
+    direction: ltr;
+}
+
+iframe {
+    height: 100%;
+    width: 100%;
+}
+
+#admin_panel_txt {
+    font-family: 'B Zar';
+    direction: rtl;
+}
+
+.table100.ver1 td {
+    font-family: "B Zar";
+    font-size: 14px;
+    text-align: center;
+    color: #808080;
+    line-height: 1.4;
+}
+
+.table100.ver1 th {
+    font-family: "B Zar";
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.4;
+    text-transform: uppercase;
+
+    background-color: #36304a;
+}

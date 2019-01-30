@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<!--<html dir="rtl" lang="fa">-->
+<html dir="ltr" lang="fa">
+
+<head>
+    <title>پنل مدیر</title>
+
+    <link rel='stylesheet prefetch' href='css/material.deep_purple-blue.min.css'>
+    <link rel='stylesheet prefetch' href='css/icon.css'>
+    <link rel='stylesheet prefetch' href='css/bootstrap.min.css'>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+
+    <!--TABLE-->
+    <!--<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">-->
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="css/util_table.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front End Development for Admin Panel">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <script src="js/Chart.min.js"></script>
+    <script src="js/material.min.js"></script>
+    <script src='js/jquery.min.js'></script>
+    <script src="js/index.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/fa.css">
+</head>
+
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header" style="background-color: #1b5e20">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title"><label>پنل مدیر</label></span>
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <a id="link1" class="mdl-navigation__link">تنظیمات<i class="material-icons">&#xE313;</i></a>
+                <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+                    for="link1">
+                    <li class="mdl-menu__item mdl-menu__item--full-bleed-divider"
+                        onclick="location.href='TODO.php?action=request'">درخواست‌های کاربران
+                    </li>
+                    <li class="mdl-menu__item" onclick="location.href='TODO.php'">ایجاد قابلیت</li>
+                    <li class="mdl-menu__item" onclick="location.href='TODO.php'">شخصی‌سازی</li>
+                    <li class="mdl-menu__item" onclick="location.href='TODO.php?action=language'">تغییر زبان</li>
+                </ul>
+                <a class="mdl-navigation__link" href="TODO.php">خانه</a>
+                <a class="mdl-navigation__link" href="TODO.php">ایجاد موسسه</a>
+                <a class="mdl-navigation__link" href="TODO.php">ایجاد خیّر</a>
+                <a class="mdl-navigation__link" href="TODO.php?advanced=on">جست‌وجوی پیشرفته</a>
+                <a class="mdl-navigation__link" href="TODO.php?action=logout">خروج</a>
+            </nav>
+
+            <div class="mdl-layout-spacer"></div>
+
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <form action="TODO.php" method="post">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="margin-top: 4.5em;">
+                        <label class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--accent"
+                               for="sample6">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <div class="mdl-textfield__expandable-holder">
+                            <input class="mdl-textfield__input" name="search" type="text" id="sample6"
+                                   style="margin-left: 1em; background-color: transparent; color: #000;">
+                            <label class="mdl-textfield__label" for="sample-expandable">Expandable Input</label>
+                        </div>
+                    </div>
+                </form>
+            </nav>
+
+        </div>
+    </header>
+    <main id="main_content" class="mdl-layout__content">
+        <div class="page-content">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <p style="font-size: 1.5em; color: red;">داشبورد ادمین
+                    <p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+
+</body>

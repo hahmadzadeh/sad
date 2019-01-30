@@ -1,0 +1,77 @@
+main#main_content{
+  background-color: #efefef;
+}
+
+.loaderTxt{
+    padding: 0;
+    margin: auto;
+    display: block;
+}
+.loaderP{
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 140px;
+}
+
+.PrgsBar > .prgsTxt {
+    margin: 1rem 0rem 0rem 10rem;
+  padding: 0.5em
+}
+.BgBar {
+  margin: 0rem 11rem;
+  background-color: #efefef;
+}
+.BgBar > div#HourlyBar {
+  width: 1%;
+  background-color:
+    rgb(213, 160, 32);
+  height: 1.5rem;
+}
+
+.BgBar > div#MonthlyBar {
+  width: 1%;
+  background-color:
+    rgb(68,138,255);
+  height: 1.5rem;
+}
+
+.BgBar > div#YearlyBar {
+  width: 1%;
+  background-color:
+    rgb(200,0,0);
+  height: 1.5rem;
+}
+div#analytics-grid{
+  width: 100%;
+}
+div#switch-grid{
+  width: 100%;
+}
+div.innerGrid{
+  width: 100%;
+}
+div.day{
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+span#someText{
+  font-style: italic;
+}
+label#activityText {
+  color: white;
+}
+div#ActivityBar {
+  font-size: 24px;
+  box-shadow: 0px 1px 4px #000;
+  background-color: rgb(103,58,183);
+}
+
+label#msgAct{
+  font-style: italic;
+  font-size: 13px;
+}
+i.actSche{
+  font-size: 35px;
+  color: white;
+  margin-top: 0.2rem;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Member Sign Up</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/fa.css">
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+<body>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic">
+					<img src="images/charity.jpg" alt="IMG">
+					<a href="TODO.php?action=language">تغییر زبان</a>
+				</div>
+
+				<form class="login100-form validate-form" action="TODO.php" method="post">
+					<span class="login102-form-title" id="form_start">
+						ثبت‌نام کاربران
+					</span>
+					<info>
+
+					<div class="wrap-input100 validate-input" data-validate = "نام ضروری است">
+						<input class="input102" type="text" name="fname" placeholder="نام">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-address-book" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "نام خانوادگی ضروری است">
+						<input class="input102" type="text" name="lname" placeholder="نام خانوادگی">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-address-book-o" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "نام کاربری ضروری است">
+						<input class="input102" type="text" name="username" placeholder="نام کاربری">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+						<i class="fa fa-user" aria-hidden="true"></i>
+					</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "نمونه: ex@abc.xyz">
+						<input class="input102" type="email" name="email" placeholder="پست الکترونیکی">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+						<i class="fa fa-envelope" aria-hidden="true"></i>
+					</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "شماره تلفن ضروری است">
+						<input class="input102" type="tel" name="number" placeholder="شماره تلفن">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+						<i class="fa fa-phone-square" aria-hidden="true"></i>
+					</span>
+					</div>
+
+					<div class="wrap-input100 input102">
+						<label>
+							<select class="focus-input100 input102" name="acc_type">
+								<option class="input102" value="0">انتخاب کنید</option>
+								<option class="input102" value="1">موسسه</option>
+								<option class="input102" value="2">نیکوکار</option>
+							</select>
+						</label>
+						<span class="symbol-input100">
+							<i class="fa fa-address-book-o" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 input100">
+						<label>
+							<select class="focus-input100 input100" name="gender">
+								<option class="input100" value="0">جنسیت</option>
+								<option class="input100" value="1">مرد</option>
+								<option class="input100" value="2">زن</option>
+								<option class="input100" value="2">هیچکدام</option>
+							</select>
+						</label>
+						<span class="symbol-input100">
+							<i class="fa fa-address-book-o" aria-hidden="true"></i>
+						</span>
+					</div>
+
+
+					<div class="wrap-input100 validate-input" data-validate = "Last Name is required">
+						<input class="input100" type="text" name="age" placeholder="سن">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-address-book-o" aria-hidden="true"></i>
+						</span>
+					</div>
+
+
+					<div class="wrap-input100 validate-input" data-validate = "رمز عبور ضروری است">
+						<input class="input102" type="password" name="password" placeholder="رمز عبور">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password Repeat is required">
+						<input class="input102" type="password" name="password_repeat" placeholder="تکرار رمز عبور">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="g-recaptcha" data-sitekey="6LfyYWcUAAAAAFpBQclUMScR8l5uXK8lne06JPGZ"></div>
+					
+					<div class="container-login100-form-btn">
+						<button class="login102-form-btn">
+							ثبت نام
+						</button>
+					</div>
+
+					<div class="text-center p-t-50">
+						<a class="" href="TODO.php?action=login">
+							<u>ورود</u>
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+<!--===============================================================================================-->	
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+        $('.js-tilt').tilt({
+            scale: 1.1
+        });
+        var $a = window.location.search.substr(1);
+        if ($a.substr(0, 3) === "id="){
+            $a = $a.substr(3, 1);
+            if ($a === "1") {
+                document.getElementById('form_start').innerHTML += "<div class=\"wrap-input100\">"+
+                    "<span class=\"warning100\"></span>"+
+                    "<span class=\"symbol-input101\">"+
+                    "<i class=\"fa fa-warning\" aria-hidden=\"true\"></i>"+
+                    "&nbsp;&nbsp;Passwords are not identical"+
+                    "</span>"+
+                    "</div>";
+            } else if ($a === "2"){
+                document.getElementById('form_start').innerHTML += "<div class=\"wrap-input100\">"+
+                    "<span class=\"warning100\"></span>"+
+                    "<span class=\"symbol-input101\">"+
+                    "<i class=\"fa fa-warning\" aria-hidden=\"true\"></i>"+
+                    "&nbsp;&nbsp;Problem submitting form"+
+                    "</span>"+
+                    "</div>";
+			}
+		}
+	</script>
+	<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+</html>
