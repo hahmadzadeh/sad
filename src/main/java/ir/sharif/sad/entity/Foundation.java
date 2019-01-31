@@ -2,7 +2,6 @@ package ir.sharif.sad.entity;
 
 
 import ir.sharif.sad.dto.FoundationDto;
-import ir.sharif.sad.dto.FoundationUserDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +17,9 @@ public class Foundation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
+    private String address;
+    private String phone;
+    private String aboutUs;
     private String email;
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Charity> charities;
@@ -26,6 +28,9 @@ public class Foundation {
 
     public Foundation(FoundationDto dto, String email) {
         this.name = dto.getName();
+        this.address = dto.getAddress();
+        this.phone = dto.getPhone();
+        this.aboutUs = dto.getAboutUs();
         this.email = email;
     }
 

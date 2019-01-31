@@ -1,8 +1,9 @@
 package ir.sharif.sad.service;
 
+import ir.sharif.sad.dto.CharityDto;
 import ir.sharif.sad.dto.FoundationDto;
-import ir.sharif.sad.dto.FoundationUserDto;
 import ir.sharif.sad.dto.ProjectDto;
+import ir.sharif.sad.entity.Charity;
 import ir.sharif.sad.entity.Foundation;
 import ir.sharif.sad.entity.Project;
 import ir.sharif.sad.repository.FoundationRepository;
@@ -32,6 +33,18 @@ public class FoundationService {
         if(byId.isPresent()){
             Foundation foundation = byId.get();
             foundation.getProjects().add(new Project(projectDto, foundation));
+            return foundation;
+        }else {
+            throw new Exception("foundation not found");
+        }
+    }
+
+    @Transactional
+    public Foundation createCharity(CharityDto charityDto, int id) throws Exception{
+        Optional<Foundation> byId = foundationRepository.findById(id);
+        if(byId.isPresent()){
+            Foundation foundation = byId.get();
+            foundation.getCharities().add(new Charity(charityDto, foundation));
             return foundation;
         }else {
             throw new Exception("foundation not found");

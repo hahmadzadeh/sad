@@ -1,6 +1,7 @@
 package ir.sharif.sad.controller;
 
 
+import ir.sharif.sad.dto.CharityDto;
 import ir.sharif.sad.dto.FoundationDto;
 import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.service.FoundationService;
@@ -34,6 +35,11 @@ public class FoundationController {
     @PostMapping("/create/{id}/project")
     public ResponseEntity createProject(@RequestBody ProjectDto projectDto, @PathVariable int id) throws Exception {
         return  ResponseEntity.ok(foundationService.createProject(projectDto, id));
+    }
+
+    @PostMapping("/create/{id}/charity")
+    public ResponseEntity createCharity(@RequestBody CharityDto charityDto, @PathVariable int id) throws Exception{
+        return ResponseEntity.ok(foundationService.createCharity(charityDto, id));
     }
         
 }

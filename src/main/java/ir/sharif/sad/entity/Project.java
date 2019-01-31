@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -34,6 +33,7 @@ public class Project {
         this.foundation = foundation;
         this.status = ProjectStatus.NOT_FINISHED;
     }
+
 
     @Override
     public String toString() {
