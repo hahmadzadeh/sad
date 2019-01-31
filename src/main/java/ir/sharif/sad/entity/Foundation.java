@@ -1,7 +1,7 @@
 package ir.sharif.sad.entity;
 
 
-
+import ir.sharif.sad.dto.FoundationUserDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,8 +21,8 @@ public class Foundation {
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Project> projects;
 
-    public Foundation(String name, String email) {
-        this.name = name;
+    public Foundation(FoundationUserDto dto, String email) {
+        this.name = dto.getName();
         this.email = email;
     }
 }
