@@ -1,3 +1,10 @@
 INSERT INTO role VALUES (1, 'ROLE_ADMIN');
 INSERT INTO role VALUES (2, 'ROLE_FOUNDATION');
 INSERT INTO role VALUES (3, 'ROLE_VOLUNTEER');
+
+
+--
+
+INSERT INTO ability VALUES (1, 'نجاری');
+INSERT INTO ability VALUES (2, 'خیاطی');
+INSERT INTO ability VALUES (3, 'بنایی');
