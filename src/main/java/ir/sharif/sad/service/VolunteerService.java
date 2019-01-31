@@ -1,10 +1,12 @@
 package ir.sharif.sad.service;
 
 import ir.sharif.sad.dto.VolunteerDto;
+import ir.sharif.sad.entity.Charity;
 import ir.sharif.sad.entity.Payment;
 import ir.sharif.sad.entity.Project;
 import ir.sharif.sad.entity.Volunteer;
 import ir.sharif.sad.enumerators.ProjectStatus;
+import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.ProjectRepository;
 import ir.sharif.sad.repository.VolunteerRepository;
 import org.slf4j.Logger;
@@ -27,11 +29,14 @@ public class VolunteerService {
     private Integer pageSize;
     private VolunteerRepository volunteerRepository;
     private ProjectRepository projectRepository;
+    private CharityRepository charityRepository;
 
     @Autowired
-    public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository) {
+    public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository
+            , CharityRepository charityRepository) {
         this.volunteerRepository = volunteerRepository;
         this.projectRepository = projectRepository;
+        this.charityRepository = charityRepository;
     }
 
     public Volunteer save(VolunteerDto volunteerDto, String name) {
@@ -57,7 +62,7 @@ public class VolunteerService {
                 Payment payment = new Payment(volunteer, project, amount);
                 project.getPayments().add(payment);
                 volunteer.getPayments().add(payment);
-                if(project.getMoney() == 0){
+                if (project.getMoney() == 0) {
                     project.setStatus(ProjectStatus.FINISHED);
                 }
                 return payment;
@@ -67,5 +72,12 @@ public class VolunteerService {
         } else {
             throw new Exception("Volunteer not created please complete volunteer");
         }
+    }
+
+    public Page<Charity> readCharities(Integer page) {
+        PageRequest pageRequest = new PageRequest(page, pageSize, Sort.Direction.ASC, "deadLine");
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        return charityRepository.findByStatusAndTimeUpperBoundGreaterThanEqual
+                (ProjectStatus.NOT_FINISHED, current, pageRequest);
     }
 }
