@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @JsonIgnoreProperties(value = {"foundation"})
+@NoArgsConstructor
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,10 +33,6 @@ public class Project {
         this.timestamp = dto.getTimestamp();
         this.foundation = foundation;
         this.status = ProjectStatus.NOT_FINISHED;
-    }
-
-    public Project(){
-
     }
 
     @Override

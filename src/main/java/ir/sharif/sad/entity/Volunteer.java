@@ -1,7 +1,9 @@
 package ir.sharif.sad.entity;
 
+import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "volunteer")
 @Data
+@NoArgsConstructor
 public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +25,7 @@ public class Volunteer {
     private String city;
     private int district;
     private String phone;
-    private String interserts;
+    private String interests;
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private List<Payment> payments;
@@ -33,4 +36,18 @@ public class Volunteer {
     @JoinTable(name = "volunteer_ability", joinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
             , inverseJoinColumns = @JoinColumn(name = "ability_id"))
     private Set<Ability> abilities;
+
+    public Volunteer(VolunteerDto dto, String email) {
+        this.name = dto.getName();
+        this.email = email;
+        this.gender = dto.getGender();
+        this.age = dto.getAge();
+        this.province = dto.getProvince();
+        this.city = dto.getCity();
+        this.district = dto.getDistrict();
+        this.phone = dto.getPhone();
+        this.interests = dto.getInterests();
+        this.abilities = dto.getAbilities();
+    }
+
 }
