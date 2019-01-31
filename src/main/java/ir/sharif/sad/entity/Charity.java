@@ -1,8 +1,12 @@
 package ir.sharif.sad.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import ir.sharif.sad.dto.CharityDto;
 import ir.sharif.sad.enumerators.Gender;
+import ir.sharif.sad.enumerators.ProjectStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,11 +15,13 @@ import java.util.Set;
 
 @Entity
 @Data
+@JsonIgnoreProperties(value = {"foundation"})
+@NoArgsConstructor
 public class Charity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String decription;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "foundation_id")
@@ -29,9 +35,40 @@ public class Charity {
     private int district;
     private Timestamp timeLowerBound;
     private Timestamp timeUpperBound;
+    private ProjectStatus status;
+
+    public Charity(CharityDto dto, Foundation foundation){
+        this.foundation = foundation;
+        this.description = dto.getDescription();
+        this.gender = dto.getGender();
+        this.ageLowerBound = dto.getAgeLowerBound();
+        this.ageUpperBound = dto.getAgeUpperBound();
+        this.province = dto.getProvince();
+        this.city = dto.getCity();
+        this.district = dto.getDistrict();
+        this.timeLowerBound = dto.getTimeLowerBound();
+        this.timeUpperBound = dto.getTimeUpperBound();
+        this.status = ProjectStatus.NOT_FINISHED;
+    }
 
     @ManyToMany
     @JoinTable(name = "charity_ability", joinColumns = @JoinColumn(name = "charity_id", referencedColumnName = "id")
             , inverseJoinColumns = @JoinColumn(name = "ability_id"))
     private Set<Ability> abilities;
+
+    @Override
+    public String toString(){
+        return "Charity{" +
+                "id = " + id +
+                        ", description = " + description +
+                        ", gender = " + gender +
+                        ", ageLowerBound = " + ageLowerBound +
+                        ", ageUpperBound = " + ageUpperBound +
+                        ", province = " + province +
+                        ", city = " + city +
+                        ", district = " + district +
+                        ", timeLowerBound = " + timeLowerBound +
+                        ", timeUpperBound = " + timeUpperBound +
+                        ", status = " + status + "}";
+    }
 }
