@@ -1,6 +1,7 @@
 package ir.sharif.sad.entity;
 
 
+import ir.sharif.sad.dto.FoundationDto;
 import ir.sharif.sad.dto.FoundationUserDto;
 import lombok.Data;
 
@@ -21,8 +22,21 @@ public class Foundation {
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Project> projects;
 
-    public Foundation(FoundationUserDto dto, String email) {
+    public Foundation(FoundationDto dto, String email) {
         this.name = dto.getName();
         this.email = email;
+    }
+
+    public Foundation(){
+
+    }
+
+    @Override
+    public String toString() {
+        return "Foundation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
