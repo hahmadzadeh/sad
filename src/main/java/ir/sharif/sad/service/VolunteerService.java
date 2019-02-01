@@ -1,5 +1,6 @@
 package ir.sharif.sad.service;
 
+import ir.sharif.sad.exceptions.InvalidAmountException;
 import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.dto.VolunteerRequestDto;
 import ir.sharif.sad.entity.*;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 @Service
 public class VolunteerService {
-    Logger logger = LoggerFactory.getLogger(VolunteerService.class);
+    private final Logger logger = LoggerFactory.getLogger(VolunteerService.class);
     @Value("${page.size}")
     private Integer pageSize;
     private VolunteerRepository volunteerRepository;
@@ -39,9 +40,10 @@ public class VolunteerService {
     }
 
 
-    public Volunteer save(VolunteerDto volunteerDto, String name) {
+    public Volunteer save(VolunteerDto volunteerDto, String name){
         Volunteer volunteer = new Volunteer(volunteerDto, name);
         volunteerRepository.save(volunteer);
+        logger.info("create new volunteer");
         return volunteer;
     }
 
@@ -76,7 +78,8 @@ public class VolunteerService {
                 }
                 return payment;
             } else {
-                throw new Exception("Invalid amount of money(perhaps too much!!)");
+                logger.error("Invalid amount of money(perhaps too much!!)");
+                throw new InvalidAmountException("Invalid amount of money(perhaps too much!!)");
             }
         } else {
             throw new Exception("Volunteer not created please complete volunteer");

@@ -1,13 +1,11 @@
 package ir.sharif.sad.entity;
 
-import ir.sharif.sad.dto.AbilityDto;
 import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

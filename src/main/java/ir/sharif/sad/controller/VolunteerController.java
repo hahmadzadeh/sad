@@ -3,7 +3,6 @@ package ir.sharif.sad.controller;
 import ir.sharif.sad.dto.PaymentDto;
 import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.dto.VolunteerRequestDto;
-import ir.sharif.sad.entity.VolunteerRequest;
 import ir.sharif.sad.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -28,7 +27,7 @@ public class VolunteerController {
     public ResponseEntity signUp(@RequestBody VolunteerDto volunteerDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(volunteerService.
-                fillAbilities(volunteerDto, volunteerService.save(volunteerDto, auth.getName())));
+                    fillAbilities(volunteerDto, volunteerService.save(volunteerDto, auth.getName())));
     }
 
     @GetMapping("/read/projects/{page}")
