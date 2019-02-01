@@ -32,9 +32,7 @@ public class Volunteer {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private List<WorkExperience> workExperiences;
 
-    @ManyToMany
-    @JoinTable(name = "volunteer_ability", joinColumns = @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
-            , inverseJoinColumns = @JoinColumn(name = "ability_id"))
+    @OneToMany
     private Set<Ability> abilities;
 
     public Volunteer(VolunteerDto dto, String email) {

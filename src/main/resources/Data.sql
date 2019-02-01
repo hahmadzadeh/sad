@@ -5,6 +5,6 @@ INSERT INTO role VALUES (3, 'ROLE_VOLUNTEER');
 
 --
 
-INSERT INTO ability VALUES (1, 'نجاری');
-INSERT INTO ability VALUES (2, 'خیاطی');
-INSERT INTO ability VALUES (3, 'بنایی');
+INSERT INTO profession VALUES (1, 'نجاری');
+INSERT INTO profession VALUES (2, 'خیاطی');
+INSERT INTO profession VALUES (3, 'بنایی');

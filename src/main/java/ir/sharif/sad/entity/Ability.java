@@ -12,5 +12,12 @@ public class Ability {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ability_id")
     private int id;
-    private String name;
+    private String profession;
+    private String freeTime;
+    private String province;
+    private String city;
+    private int district;
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
 }

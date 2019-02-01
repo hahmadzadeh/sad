@@ -4,6 +4,7 @@ import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Data
 public class CharityDto {
@@ -16,4 +17,5 @@ public class CharityDto {
     private int district;
     private Timestamp timeLowerBound;
     private Timestamp timeUpperBound;
+    private Set<String> professions;
 }

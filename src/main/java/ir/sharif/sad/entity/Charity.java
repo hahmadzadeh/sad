@@ -37,7 +37,7 @@ public class Charity {
     private Timestamp timeUpperBound;
     private ProjectStatus status;
 
-    public Charity(CharityDto dto, Foundation foundation){
+    public Charity(CharityDto dto, Foundation foundation, Set<Profession> professions){
         this.foundation = foundation;
         this.description = dto.getDescription();
         this.gender = dto.getGender();
@@ -49,12 +49,13 @@ public class Charity {
         this.timeLowerBound = dto.getTimeLowerBound();
         this.timeUpperBound = dto.getTimeUpperBound();
         this.status = ProjectStatus.NOT_FINISHED;
+        this.professions = professions;
     }
 
     @ManyToMany
     @JoinTable(name = "charity_ability", joinColumns = @JoinColumn(name = "charity_id", referencedColumnName = "id")
-            , inverseJoinColumns = @JoinColumn(name = "ability_id"))
-    private Set<Ability> abilities;
+            , inverseJoinColumns = @JoinColumn(name = "profession_id"))
+    private Set<Profession> professions;
 
     @Override
     public String toString(){
