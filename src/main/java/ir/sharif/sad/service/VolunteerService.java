@@ -1,10 +1,7 @@
 package ir.sharif.sad.service;
 
 import ir.sharif.sad.dto.VolunteerDto;
-import ir.sharif.sad.entity.Charity;
-import ir.sharif.sad.entity.Payment;
-import ir.sharif.sad.entity.Project;
-import ir.sharif.sad.entity.Volunteer;
+import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.ProjectRepository;
@@ -52,11 +49,12 @@ public class VolunteerService {
 
     @Transactional
     public Payment makePayment(Integer amount, String name, Integer id) throws Exception {
-        Volunteer volunteer = volunteerRepository.findOneByEmail(name);
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         Optional<Project> byId = projectRepository.findById(id);
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        if (volunteer != null && byId.isPresent() && byId.get().getDeadLine().after(current)) {
+        if (byEmail.isPresent()&& byId.isPresent() && byId.get().getDeadLine().after(current)) {
             Project project = byId.get();
+            Volunteer volunteer = byEmail.get();
             if (amount <= project.getMoney() && amount > 0) {
                 project.setMoney(project.getMoney() - amount);
                 Payment payment = new Payment(volunteer, project, amount);
@@ -79,5 +77,14 @@ public class VolunteerService {
         Timestamp current = new Timestamp(System.currentTimeMillis());
         return charityRepository.findByStatusAndTimeUpperBoundGreaterThanEqual
                 (ProjectStatus.NOT_FINISHED, current, pageRequest);
+    }
+
+    public Volunteer readOne(String name) throws Exception {
+        Optional<Volunteer> byId = volunteerRepository.findOneByEmail(name);
+        if(byId.isPresent()){
+            return byId.get();
+        }else {
+            throw new Exception("volunteer is not signed up yet");
+        }
     }
 }

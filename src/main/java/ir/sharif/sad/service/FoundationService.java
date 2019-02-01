@@ -29,32 +29,47 @@ public class FoundationService {
     }
 
 
-    public Foundation save(FoundationDto foundationDto, String name) {
+    public Foundation save(FoundationDto foundationDto, String name) throws Exception {
+        Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
+        if(oneByEmail.isPresent()){
+            throw new Exception("already signed up");
+        }
         return foundationRepository.save(new Foundation(foundationDto, name));
     }
 
     @Transactional
-    public Foundation createProject(ProjectDto projectDto, int id) throws Exception {
+    public Project createProject(ProjectDto projectDto, int id) throws Exception {
         Optional<Foundation> byId = foundationRepository.findById(id);
         if(byId.isPresent()){
             Foundation foundation = byId.get();
-            foundation.getProjects().add(new Project(projectDto, foundation));
-            return foundation;
+            Project project = new Project(projectDto, foundation);
+            foundation.getProjects().add(project);
+            return project;
         }else {
             throw new Exception("foundation not found");
         }
     }
 
     @Transactional
-    public Foundation createCharity(CharityDto charityDto, int id) throws Exception{
+    public Charity createCharity(CharityDto charityDto, int id) throws Exception{
         Optional<Foundation> byId = foundationRepository.findById(id);
         if(byId.isPresent()){
             Foundation foundation = byId.get();
-            Set<Profession> professions = professionRepository.findByName(charityDto.getProfessions());
-            foundation.getCharities().add(new Charity(charityDto, foundation, professions));
-            return foundation;
+            Set<Profession> professions = professionRepository.findByNameIn(charityDto.getProfessions());
+            Charity charity = new Charity(charityDto, foundation, professions);
+            foundation.getCharities().add(charity);
+            return charity;
         }else {
             throw new Exception("foundation not found");
+        }
+    }
+
+    public Foundation readOne(String name) throws Exception {
+        Optional<Foundation> byId = foundationRepository.findOneByEmail(name);
+        if(byId.isPresent()){
+            return byId.get();
+        }else {
+            throw new Exception("foundation is not signed up yet");
         }
     }
 }

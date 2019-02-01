@@ -37,8 +37,6 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteerService.readCharities(page));
     }
 
-
-
     @PostMapping("/do/{id}/payment")
     public ResponseEntity makePayment(@RequestBody PaymentDto paymentDto, @PathVariable Integer id) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

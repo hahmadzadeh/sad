@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 
@@ -56,6 +57,8 @@ public class Charity {
     @JoinTable(name = "charity_ability", joinColumns = @JoinColumn(name = "charity_id", referencedColumnName = "id")
             , inverseJoinColumns = @JoinColumn(name = "profession_id"))
     private Set<Profession> professions;
+    @OneToMany(mappedBy = "charity", cascade = CascadeType.ALL)
+    private List<VolunteerRequest> requests;
 
     @Override
     public String toString(){

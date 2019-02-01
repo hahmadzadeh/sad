@@ -27,7 +27,7 @@ public class FoundationController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity signUp(@RequestBody FoundationDto foundationDto){
+    public ResponseEntity signUp(@RequestBody FoundationDto foundationDto) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(foundationService.save(foundationDto, auth.getName()));
     }

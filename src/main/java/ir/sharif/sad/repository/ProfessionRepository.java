@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Repository("professionRepository")
 public interface ProfessionRepository extends JpaRepository<Profession, Integer> {
-    Set<Profession> findByName(Iterable<String> strings);
+    Set<Profession> findByNameIn(Iterable<String> strings);
 }

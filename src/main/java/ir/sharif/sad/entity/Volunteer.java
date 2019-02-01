@@ -31,6 +31,9 @@ public class Volunteer {
     private List<Payment> payments;
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private List<WorkExperience> workExperiences;
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private List<VolunteerRequest> volunteerRequests;
+
 
     @OneToMany
     private Set<Ability> abilities;
@@ -47,5 +50,4 @@ public class Volunteer {
         this.interests = dto.getInterests();
         this.abilities = dto.getAbilities();
     }
-
 }
