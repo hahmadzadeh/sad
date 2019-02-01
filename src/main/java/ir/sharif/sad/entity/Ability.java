@@ -1,5 +1,6 @@
 package ir.sharif.sad.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ir.sharif.sad.dto.AbilityDto;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "ability")
+@JsonIgnoreProperties(value = {"volunteer"})
 public class Ability {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

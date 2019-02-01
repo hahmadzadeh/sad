@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RepositoryRestController
 @Secured("ROLE_FOUNDATION")
-@RequestMapping("/foundations/")
+@RequestMapping("/foundation/")
 public class FoundationController {
     private FoundationService foundationService;
     @Autowired

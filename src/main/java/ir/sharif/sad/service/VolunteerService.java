@@ -1,8 +1,10 @@
 package ir.sharif.sad.service;
 
 import ir.sharif.sad.dto.VolunteerDto;
+import ir.sharif.sad.dto.VolunteerRequestDto;
 import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
+import ir.sharif.sad.enumerators.State;
 import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.ProjectRepository;
 import ir.sharif.sad.repository.VolunteerRepository;
@@ -36,8 +38,17 @@ public class VolunteerService {
         this.charityRepository = charityRepository;
     }
 
+
     public Volunteer save(VolunteerDto volunteerDto, String name) {
-        return volunteerRepository.save(new Volunteer(volunteerDto, name));
+        Volunteer volunteer = new Volunteer(volunteerDto, name);
+        volunteerRepository.save(volunteer);
+        return volunteer;
+    }
+
+    @Transactional
+    public Volunteer fillAbilities(VolunteerDto volunteerDto, Volunteer volunteer){
+        volunteerDto.getAbilities().forEach(e -> volunteer.getAbilities().add(new Ability(e, volunteer)));
+        return volunteer;
     }
 
     public Page<Project> readProjects(Integer page) {
@@ -86,5 +97,31 @@ public class VolunteerService {
         }else {
             throw new Exception("volunteer is not signed up yet");
         }
+    }
+
+    public VolunteerRequest makeRequest(VolunteerRequestDto dto, String name, Integer id) throws Exception {
+        Optional<Charity> byId = charityRepository.findById(id);
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
+        if(byId.isPresent() && byEmail.isPresent()){
+            Charity charity = byId.get();
+            Volunteer volunteer = byEmail.get();
+            if(isQualified(volunteer, charity)){
+                VolunteerRequest request = new VolunteerRequest();
+                request.setCharity(charity);
+                request.setVolunteer(volunteer);
+                request.setState(State.INQUEUE);
+                request.setDescription(dto.getDescription());
+                charity.getRequests().add(request);
+                volunteer.getVolunteerRequests().add(request);
+            }else{
+                throw new Exception("volunteer is not qualified");
+            }
+        }
+        throw new Exception("volunteer or charity dose not exist");
+    }
+
+    private boolean isQualified(Volunteer volunteer, Charity charity){
+        return volunteer.getAge() >= charity.getAgeLowerBound() && volunteer.getAge() <= charity.getAgeUpperBound() &&
+                volunteer.getGender() == charity.getGender();
     }
 }

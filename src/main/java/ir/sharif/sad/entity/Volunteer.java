@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Volunteer {
     private List<VolunteerRequest> volunteerRequests;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private List<Ability> abilities;
 
     public Volunteer(VolunteerDto dto, String email) {
@@ -49,9 +50,6 @@ public class Volunteer {
         this.district = dto.getDistrict();
         this.phone = dto.getPhone();
         this.interests = dto.getInterests();
-        this.abilities = new ArrayList<>();
-        for (AbilityDto abilityDto: dto.getAbilities()) {
-            this.abilities.add(new Ability(abilityDto, this));
-        }
+        this.abilities = new LinkedList<>();
     }
 }
