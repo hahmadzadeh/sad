@@ -1,10 +1,10 @@
 package ir.sharif.sad.dto;
 
-import ir.sharif.sad.entity.Ability;
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
+
 
 @Data
 public class VolunteerDto {
@@ -16,5 +16,5 @@ public class VolunteerDto {
     private int district;
     private String phone;
     private String interests;
-    private Set<Ability> abilities;
+    private List<AbilityDto> abilities;
 }

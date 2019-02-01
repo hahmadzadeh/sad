@@ -1,13 +1,14 @@
 package ir.sharif.sad.entity;
 
+import ir.sharif.sad.dto.AbilityDto;
 import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "volunteer")
@@ -36,7 +37,7 @@ public class Volunteer {
 
 
     @OneToMany
-    private Set<Ability> abilities;
+    private List<Ability> abilities;
 
     public Volunteer(VolunteerDto dto, String email) {
         this.name = dto.getName();
@@ -48,6 +49,9 @@ public class Volunteer {
         this.district = dto.getDistrict();
         this.phone = dto.getPhone();
         this.interests = dto.getInterests();
-        this.abilities = dto.getAbilities();
+        this.abilities = new ArrayList<>();
+        for (AbilityDto abilityDto: dto.getAbilities()) {
+            this.abilities.add(new Ability(abilityDto, this));
+        }
     }
 }
