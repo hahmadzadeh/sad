@@ -26,7 +26,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.createAdmin(adminUserDto, Roles.ADMIN));
     }
     @GetMapping("/read/users")
-    public ResponseEntity readAllUser(Pageable page, @RequestParam  String filter){
+    public ResponseEntity readAllUser(Pageable page, @RequestParam(required = false) String filter){
         Filter filterObj = new Filter(filter);
         return ResponseEntity.ok(adminService.readAll(page, filterObj));
     }

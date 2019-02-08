@@ -7,8 +7,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import static ir.sharif.sad.specification.FilterToken.GREATER_EQ;
-
 public class CustomSpecification<T> implements Specification<T> {
     private SearchCriteria criteria;
 
@@ -28,7 +26,7 @@ public class CustomSpecification<T> implements Specification<T> {
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
-        if (criteria.getOperation().equalsIgnoreCase(GREATER_EQ)) {
+        if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
                     root. get(criteria.getKey()), criteria.getValue().toString());
         }

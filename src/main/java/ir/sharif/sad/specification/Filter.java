@@ -18,7 +18,7 @@ public class Filter {
 
     public Filter(String filter) {
         this.items = new LinkedList<>();
-        Pattern pattern = Pattern.compile("(\\w+?)(==|>=|<=|:|<|>)(\\w+?),");
+        Pattern pattern = Pattern.compile("(\\w+?)([:<>])(\\w+?),");
         Matcher matcher = pattern.matcher(filter + ",");
         while (matcher.find()){
             this.items.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
@@ -28,6 +28,8 @@ public class Filter {
 
     public  <T extends Specification> Specification getSpecified(Class<T> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<T> constructor = clazz.getConstructor(SearchCriteria.class);
+        if(items.isEmpty())
+            return null;
         Specification result = constructor.newInstance(items.remove(0));
         List<Specification> collect = items.stream().map(e -> {
             try {
