@@ -21,7 +21,8 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
         response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
 
         PrintWriter writer = response.getWriter();
-        writer.println("HTTP Status 401 : " + authException.getMessage());
+        response.setStatus(401);
+        writer.println(authException.getMessage());
     }
 
     @Override
