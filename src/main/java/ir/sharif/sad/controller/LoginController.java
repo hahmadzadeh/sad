@@ -6,9 +6,12 @@ import ir.sharif.sad.service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.swing.text.html.parser.Entity;
 
 @RepositoryRestController
 @RequestMapping("/login/")
@@ -31,13 +34,14 @@ public class LoginController {
         return ResponseEntity.ok(foundationService.readOne(auth.getName()));
     }
 
+
     @PostMapping(value = "/volunteer")
     public ResponseEntity homeVolunteer() throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(volunteerService.readOne(auth.getName()));
     }
 
-    @PostMapping
+    @PostMapping(value = "/admin")
     public ResponseEntity homeAdmin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok("welcome " + auth.getName());
