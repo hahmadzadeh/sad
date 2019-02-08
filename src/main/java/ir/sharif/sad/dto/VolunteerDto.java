@@ -2,6 +2,7 @@ package ir.sharif.sad.dto;
 
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public class VolunteerDto {
     private int district;
     private String phone;
     private String interests;
+    @NonNull
     private List<AbilityDto> abilities;
 }

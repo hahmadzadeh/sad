@@ -2,6 +2,9 @@ package ir.sharif.sad.controller;
 
 import ir.sharif.sad.dto.AdminUserDto;
 import ir.sharif.sad.enumerators.Roles;
+import ir.sharif.sad.repository.CharityRepository;
+import ir.sharif.sad.repository.ProjectRepository;
+import ir.sharif.sad.repository.UserRepository;
 import ir.sharif.sad.service.AdminService;
 import ir.sharif.sad.specification.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,16 @@ public class AdminController {
     @GetMapping("/read/users")
     public ResponseEntity readAllUser(Pageable page, @RequestParam(required = false) String filter){
         Filter filterObj = new Filter(filter);
-        return ResponseEntity.ok(adminService.readAll(page, filterObj));
+        return ResponseEntity.ok(adminService.readAll(page, filterObj, UserRepository.class));
+    }
+    @GetMapping("/read/projects")
+    public ResponseEntity readAllProject(Pageable page, @RequestParam(required = false) String filter){
+        Filter filterObj = new Filter(filter);
+        return ResponseEntity.ok(adminService.readAll(page, filterObj, ProjectRepository.class));
+    }
+    @GetMapping("/read/charities")
+    public ResponseEntity readAllCharity(Pageable page, @RequestParam(required = false) String filter){
+        Filter filterObj = new Filter(filter);
+        return ResponseEntity.ok(adminService.readAll(page, filterObj, CharityRepository.class));
     }
 }
