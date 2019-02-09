@@ -8,7 +8,9 @@ import ir.sharif.sad.enumerators.ProjectStatus;
 import ir.sharif.sad.enumerators.State;
 import ir.sharif.sad.exceptions.VolunteerExistException;
 import ir.sharif.sad.repository.*;
+import ir.sharif.sad.specification.CustomSpecification;
 import ir.sharif.sad.specification.Filter;
+import ir.sharif.sad.specification.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,9 +188,16 @@ public class VolunteerService {
 
     public Page<PaymentDto> readMyPayments(Pageable page, Filter filterObj, String email) {
         Specification specified = filterObj.getSpecified();
-        Optional<Volunteer> volunteer = volunteerRepository.findOneByEmail(email);
-        Volunteer volunteer1 = volunteer.get();
-        List<PaymentDto> collect = paymentRepository.findAllByVolunteer(volunteer1, page, specified).get()
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(email);
+        Volunteer volunteer = byEmail.get();
+        SearchCriteria searchCriteria = new SearchCriteria("volunteer", ":",  volunteer);
+        if (specified == null) {
+            specified = new CustomSpecification(searchCriteria);
+        }else{
+            Specification.where(specified).and(new CustomSpecification(searchCriteria));
+        }
+        Page<Payment> all = paymentRepository.findAll(specified, page);
+        List<PaymentDto> collect = all.get()
                 .map(PaymentDto::PaymentDto2Payment).collect(Collectors.toList());
         PageImpl<PaymentDto> ans = new PageImpl<PaymentDto>(collect, page, collect.size());
         return ans;

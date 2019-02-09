@@ -15,7 +15,7 @@ public class PaymentDto {
         PaymentDto dto = new PaymentDto();
         dto.amount = payment.getAmount();
         dto.project = ProjectDto.project2ProjectDto(payment.getProject());
-        dto.projectId = payment.getId();
+        dto.projectId = payment.getProject().getId();
         dto.paidTime = payment.getTimestamp();
         return dto;
     }
