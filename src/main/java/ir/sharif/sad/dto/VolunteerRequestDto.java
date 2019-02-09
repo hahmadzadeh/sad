@@ -1,9 +1,10 @@
 package ir.sharif.sad.dto;
 
-import com.sun.istack.internal.Nullable;
+
 import ir.sharif.sad.entity.VolunteerRequest;
 import ir.sharif.sad.enumerators.State;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 public class VolunteerRequestDto {
