@@ -29,12 +29,12 @@ public class FoundationService {
     }
 
 
-    public Foundation save(FoundationDto foundationDto, String name) throws Exception {
+    public FoundationDto save(FoundationDto foundationDto, String name) throws Exception {
         Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
         if(oneByEmail.isPresent()){
             throw new Exception("already signed up");
         }
-        return foundationRepository.save(new Foundation(foundationDto, name));
+        return FoundationDto.Foundation2FoundationDto(foundationRepository.save(new Foundation(foundationDto, name)));
     }
 
     @Transactional
@@ -71,5 +71,15 @@ public class FoundationService {
         }else {
             throw new Exception("foundation is not signed up yet");
         }
+    }
+
+    @Transactional
+    public FoundationDto update(FoundationDto foundationDto, String name) {
+        Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
+        Foundation foundation = oneByEmail.get();
+        foundation.setAboutUs(foundationDto.getAboutUs());
+        foundation.setAddress(foundationDto.getAddress());
+        foundation.setPhone(foundationDto.getPhone());
+        return FoundationDto.Foundation2FoundationDto(foundation);
     }
 }

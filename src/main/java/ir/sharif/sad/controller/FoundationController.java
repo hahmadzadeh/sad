@@ -22,30 +22,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/foundation/")
 public class FoundationController {
     private FoundationService foundationService;
+
     @Autowired
-    public FoundationController(FoundationService foundationService){
+    public FoundationController(FoundationService foundationService) {
         this.foundationService = foundationService;
     }
 
-    @PostMapping("/sign_up")
-    public ResponseEntity signUp(@RequestBody FoundationDto foundationDto) throws Exception {
+    @PostMapping("/signup")
+    public ResponseEntity signUp(@RequestBody FoundationDto foundationDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(foundationService.save(foundationDto, auth.getName()));
+        try {
+            return ResponseEntity.ok(foundationService.save(foundationDto, auth.getName()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity update(@RequestBody FoundationDto foundationDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(foundationService.update(foundationDto, auth.getName()));
     }
 
     @PostMapping("/create/project")
     public ResponseEntity createProject(@RequestBody ProjectDto projectDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
-            return  ResponseEntity.ok(foundationService.createProject(projectDto, auth.getName()));
+            return ResponseEntity.ok(foundationService.createProject(projectDto, auth.getName()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @PostMapping("/create/{id}/charity")
-    public ResponseEntity createCharity(@RequestBody CharityDto charityDto, @PathVariable int id) throws Exception{
+    public ResponseEntity createCharity(@RequestBody CharityDto charityDto, @PathVariable int id) throws Exception {
         return ResponseEntity.ok(foundationService.createCharity(charityDto, id));
     }
-        
+
 }
