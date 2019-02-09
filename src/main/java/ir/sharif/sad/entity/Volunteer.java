@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "volunteer")
@@ -35,8 +37,10 @@ public class Volunteer {
     private List<VolunteerRequest> volunteerRequests;
 
 
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
-    private List<Ability> abilities;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "volunteer_profession", joinColumns = @JoinColumn(name = "volunteer_id"), inverseJoinColumns = @JoinColumn(name = "profession_id"))
+    private Set<Profession> professions;
+
 
     public Volunteer(VolunteerDto dto, String email) {
         this.name = dto.getName();
@@ -48,6 +52,6 @@ public class Volunteer {
         this.district = dto.getDistrict();
         this.phone = dto.getPhone();
         this.interests = dto.getInterests();
-        this.abilities = new LinkedList<>();
+        this.professions = new HashSet<>();
     }
 }

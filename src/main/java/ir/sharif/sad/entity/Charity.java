@@ -37,6 +37,8 @@ public class Charity {
     private long timeLowerBound;
     private long timeUpperBound;
     private ProjectStatus status;
+    private long numWeeks;
+    private String schedule;
 
     public Charity(CharityDto dto, Foundation foundation, Set<Profession> professions){
         this.foundation = foundation;
@@ -51,11 +53,12 @@ public class Charity {
         this.timeUpperBound = dto.getTimeUpperBound().getTime();
         this.status = ProjectStatus.NOT_FINISHED;
         this.professions = professions;
+        this.schedule = dto.getSchedule();
+        this.numWeeks = dto.getNumWeeks();
     }
 
-    @ManyToMany
-    @JoinTable(name = "charity_ability", joinColumns = @JoinColumn(name = "charity_id", referencedColumnName = "id")
-            , inverseJoinColumns = @JoinColumn(name = "profession_id"))
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "charity_profession", joinColumns = @JoinColumn(name = "charity_id"), inverseJoinColumns = @JoinColumn(name = "profession_id"))
     private Set<Profession> professions;
     @OneToMany(mappedBy = "charity", cascade = CascadeType.ALL)
     private List<VolunteerRequest> requests;

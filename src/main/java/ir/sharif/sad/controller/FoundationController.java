@@ -54,9 +54,9 @@ public class FoundationController {
         }
     }
 
-    @PostMapping("/create/{id}/charity")
-    public ResponseEntity createCharity(@RequestBody CharityDto charityDto, @PathVariable int id) throws Exception {
-        return ResponseEntity.ok(foundationService.createCharity(charityDto, id));
+    @PostMapping("/create/charity")
+    public ResponseEntity createCharity(@RequestBody CharityDto charityDto) throws Exception {
+        return ResponseEntity.ok(foundationService.createCharity(charityDto));
     }
 
 }

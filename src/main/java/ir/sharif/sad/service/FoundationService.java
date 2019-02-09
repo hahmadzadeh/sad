@@ -51,8 +51,8 @@ public class FoundationService {
     }
 
     @Transactional
-    public Charity createCharity(CharityDto charityDto, int id) throws Exception{
-        Optional<Foundation> byId = foundationRepository.findById(id);
+    public Charity createCharity(CharityDto charityDto) throws Exception{
+        Optional<Foundation> byId = foundationRepository.findById(charityDto.getFoundationId());
         if(byId.isPresent()){
             Foundation foundation = byId.get();
             Set<Profession> professions = professionRepository.findByNameIn(charityDto.getProfessions());

@@ -17,8 +17,6 @@ public class Profession {
     private int id;
     private String name;
     private Category category;
-    @OneToMany(mappedBy = "profession", cascade = CascadeType.ALL)
-    private List<Ability> ability;
 
     public Profession(String name, Category category) {
         this.name = name;

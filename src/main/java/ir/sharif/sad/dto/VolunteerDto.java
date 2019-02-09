@@ -1,6 +1,6 @@
 package ir.sharif.sad.dto;
 
-import ir.sharif.sad.entity.Ability;
+import ir.sharif.sad.entity.Profession;
 import ir.sharif.sad.entity.Volunteer;
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class VolunteerDto {
     private String phone;
     private String interests;
     @NonNull
-    private List<AbilityDto> abilities;
+    private List<String> professions;
 
     public static VolunteerDto volunteer2VolunteerDto(Volunteer volunteer){
         VolunteerDto volunteerDto = new VolunteerDto();
@@ -35,8 +35,8 @@ public class VolunteerDto {
         volunteerDto.district = volunteer.getDistrict();
         volunteerDto.phone = volunteer.getPhone();
         volunteerDto.interests = volunteer.getInterests();
-        volunteerDto.abilities = volunteer.getAbilities().parallelStream()
-                .map(AbilityDto::ability2AbilityDto).collect(Collectors.toList());
+        volunteerDto.professions = volunteer.getProfessions().parallelStream()
+                .map(Profession::getName).collect(Collectors.toList());
         return volunteerDto;
     }
 }

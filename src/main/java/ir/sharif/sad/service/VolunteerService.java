@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -63,10 +64,10 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer fillAbilities(VolunteerDto volunteerDto, Volunteer volunteer) {
-        Stream<AbilityDto> abilityDtoStream = volunteerDto.getAbilities().stream()
-                .filter(e -> professionRepository.findByName(e.getProfession()).isPresent());
-        abilityDtoStream.forEach(e -> volunteer.getAbilities()
-                .add(new Ability(e, volunteer, professionRepository.findByName(e.getProfession()).get())));
+        Stream<ProfessionDto> professionDtoStream = volunteerDto.getProfessions().stream()
+                .filter(e -> professionRepository.findByName(e.getName()).isPresent());
+        professionDtoStream.forEach(e -> volunteer.getProfessions()
+                .add(professionRepository.findByName(e.getName()).get()));
         return volunteer;
     }
 
@@ -168,7 +169,7 @@ public class VolunteerService {
         volunteer.setGender(volunteerDto.getGender());
         volunteer.setPhone(volunteerDto.getPhone());
         volunteer.setProvince(volunteerDto.getProvince());
-        volunteer.setAbilities(new LinkedList<>());
+        volunteer.setProfessions(new HashSet<>());
         return volunteer;
     }
 
