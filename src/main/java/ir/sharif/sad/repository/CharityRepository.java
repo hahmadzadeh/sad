@@ -8,6 +8,4 @@ import org.springframework.data.domain.Pageable;
 import java.sql.Timestamp;
 
 public interface CharityRepository extends CustomRepository<Charity, Integer> {
-    Page<Charity> findByStatusAndTimeUpperBoundGreaterThanEqual
-            (ProjectStatus status, Timestamp current, Pageable pageRequest);
 }

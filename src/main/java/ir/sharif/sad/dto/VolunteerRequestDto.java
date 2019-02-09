@@ -1,7 +1,6 @@
 package ir.sharif.sad.dto;
 
 import com.sun.istack.internal.Nullable;
-import ir.sharif.sad.entity.Volunteer;
 import ir.sharif.sad.entity.VolunteerRequest;
 import ir.sharif.sad.enumerators.State;
 import lombok.Data;
