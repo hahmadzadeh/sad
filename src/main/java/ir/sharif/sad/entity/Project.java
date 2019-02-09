@@ -19,7 +19,8 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private long money;
+    private long primaryMoney;
+    private long paidSoFar;
     private String description;
     private Timestamp deadLine;
     private ProjectStatus status;
@@ -32,9 +33,10 @@ public class Project {
     private List<Payment> payments;
 
     public Project(ProjectDto dto, Foundation foundation){
-        this.money = dto.getMoney();
+        this.primaryMoney = dto.getPrimaryMoney();
+        this.paidSoFar = 0;
         this.description = dto.getDescription();
-        this.deadLine = dto.getTimestamp();
+        this.deadLine = dto.getDeadLine();
         this.foundation = foundation;
         this.status = ProjectStatus.NOT_FINISHED;
     }
@@ -44,10 +46,14 @@ public class Project {
     public String toString() {
         return "Project{" +
                 "id=" + id +
-                ", money=" + money +
+                ", money=" + primaryMoney +
                 ", description='" + description + '\'' +
                 ", deadLine=" + deadLine +
                 '}';
+    }
+
+    public long getRemainingMoney(){
+        return primaryMoney - paidSoFar;
     }
 }
 

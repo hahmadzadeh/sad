@@ -1,28 +1,28 @@
 package ir.sharif.sad.service;
 
-import ir.sharif.sad.dto.AbilityDto;
+import ir.sharif.sad.dto.*;
+import ir.sharif.sad.exceptions.EntityNotExistException;
 import ir.sharif.sad.exceptions.InvalidAmountException;
-import ir.sharif.sad.dto.VolunteerDto;
-import ir.sharif.sad.dto.VolunteerRequestDto;
 import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import ir.sharif.sad.enumerators.State;
-import ir.sharif.sad.repository.CharityRepository;
-import ir.sharif.sad.repository.ProfessionRepository;
-import ir.sharif.sad.repository.ProjectRepository;
-import ir.sharif.sad.repository.VolunteerRepository;
+import ir.sharif.sad.exceptions.VolunteerExistException;
+import ir.sharif.sad.repository.*;
+import ir.sharif.sad.specification.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -34,18 +34,25 @@ public class VolunteerService {
     private final ProjectRepository projectRepository;
     private final CharityRepository charityRepository;
     private final ProfessionRepository professionRepository;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
     public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository
-            , CharityRepository charityRepository, ProfessionRepository professionRepository) {
+            , CharityRepository charityRepository, ProfessionRepository professionRepository, PaymentRepository paymentRepository) {
         this.volunteerRepository = volunteerRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
         this.professionRepository = professionRepository;
+        this.paymentRepository = paymentRepository;
     }
 
 
-    public Volunteer save(VolunteerDto volunteerDto, String name) {
+    public Volunteer save(VolunteerDto volunteerDto, String name) throws VolunteerExistException {
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
+        if (byEmail.isPresent()) {
+            logger.error("volunteer already signed up");
+            throw new VolunteerExistException("volunteer exists");
+        }
         Volunteer volunteer = new Volunteer(volunteerDto, name);
         volunteerRepository.save(volunteer);
         logger.info("create new volunteer");
@@ -61,30 +68,36 @@ public class VolunteerService {
         return volunteer;
     }
 
-    public Page<Project> readProjects(Integer page) {
-        PageRequest pageRequest = new PageRequest(page, pageSize, Sort.Direction.ASC, "deadLine");
+    @Transactional
+    public Page<ProjectDto> readProjects(Pageable page, Filter filter) {
+        PageRequest pageRequest = new PageRequest(page.getPageNumber(), page.getPageSize(), Sort.Direction.ASC, "deadLine");
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        return projectRepository.findByStatusAndDeadLineGreaterThanEqual
-                (ProjectStatus.NOT_FINISHED, current, pageRequest);
+        Specification specified = filter.getSpecified();
+        Page<Project> all = projectRepository.findAll(specified, pageRequest);
+        all.get().filter(e -> e.getDeadLine().before(current) && e.getStatus() == ProjectStatus.NOT_FINISHED)
+                .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
+        List<ProjectDto> collect = all.get().map(ProjectDto::project2ProjectDto).collect(Collectors.toList());
+        PageImpl<ProjectDto> projectDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        return projectDtos;
     }
 
     @Transactional
-    public Payment makePayment(Integer amount, String name, Integer id) throws Exception {
+    public PaymentDto makePayment(Integer amount, String name, Integer id) throws Exception {
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         Optional<Project> byId = projectRepository.findById(id);
         Timestamp current = new Timestamp(System.currentTimeMillis());
         if (byEmail.isPresent() && byId.isPresent() && byId.get().getDeadLine().after(current)) {
             Project project = byId.get();
             Volunteer volunteer = byEmail.get();
-            if (amount <= project.getMoney() && amount > 0) {
-                project.setMoney(project.getMoney() - amount);
+            if (amount <= project.getRemainingMoney() && amount > 0) {
+                project.setPaidSoFar(project.getPaidSoFar() + amount);
                 Payment payment = new Payment(volunteer, project, amount);
                 project.getPayments().add(payment);
                 volunteer.getPayments().add(payment);
-                if (project.getMoney() == 0) {
+                if (project.getRemainingMoney() == 0) {
                     project.setStatus(ProjectStatus.FINISHED);
                 }
-                return payment;
+                return PaymentDto.PaymentDto2Payment(payment);
             } else {
                 logger.error("Invalid amount of money(perhaps too much!!)");
                 throw new InvalidAmountException("Invalid amount of money(perhaps too much!!)");
@@ -101,11 +114,12 @@ public class VolunteerService {
                 (ProjectStatus.NOT_FINISHED, current, pageRequest);
     }
 
-    public Volunteer readOne(String name) throws Exception {
+    public VolunteerDto readOne(String name) throws Exception {
         Optional<Volunteer> byId = volunteerRepository.findOneByEmail(name);
         if (byId.isPresent()) {
-            return byId.get();
+            return VolunteerDto.volunteer2VolunteerDto(byId.get());
         } else {
+            logger.error("volunteer is not signed up yet");
             throw new Exception("volunteer is not signed up yet");
         }
     }
@@ -134,5 +148,48 @@ public class VolunteerService {
     private boolean isQualified(Volunteer volunteer, Charity charity) {
         return volunteer.getAge() >= charity.getAgeLowerBound() && volunteer.getAge() <= charity.getAgeUpperBound() &&
                 volunteer.getGender() == charity.getGender();
+    }
+
+    @Transactional
+    public Volunteer updateProfile(VolunteerDto volunteerDto, String name) throws EntityNotExistException {
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
+        if (!byEmail.isPresent()) {
+            logger.error("volunteer does not exist");
+            throw new EntityNotExistException("volunteer does not exist");
+        }
+        Volunteer volunteer = byEmail.get();
+        volunteer.setName(volunteerDto.getName());
+        volunteer.setAge(volunteerDto.getAge());
+        volunteer.setCity(volunteerDto.getCity());
+        volunteer.setDistrict(volunteerDto.getDistrict());
+        volunteer.setGender(volunteerDto.getGender());
+        volunteer.setPhone(volunteerDto.getPhone());
+        volunteer.setProvince(volunteerDto.getProvince());
+        volunteer.setAbilities(new LinkedList<>());
+        return volunteer;
+    }
+
+    @Transactional
+    public ProjectDto readOneProject(Integer id) throws EntityNotExistException {
+        Optional<Project> byId = projectRepository.findById(id);
+        if (!byId.isPresent()) {
+            logger.error("project does not exist");
+            throw new EntityNotExistException("project does not exist");
+        }
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        if (byId.get().getDeadLine().before(current) && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
+            byId.get().setStatus(ProjectStatus.FINISHED);
+        }
+        return ProjectDto.project2ProjectDto(byId.get());
+    }
+
+    public Page<PaymentDto> readMyPayments(Pageable page, Filter filterObj, String email) {
+        Specification specified = filterObj.getSpecified();
+        Optional<Volunteer> volunteer = volunteerRepository.findOneByEmail(email);
+        Volunteer volunteer1 = volunteer.get();
+        List<PaymentDto> collect = paymentRepository.findAllByVolunteer(volunteer1, page, specified).get()
+                .map(PaymentDto::PaymentDto2Payment).collect(Collectors.toList());
+        PageImpl<PaymentDto> ans = new PageImpl<PaymentDto>(collect, page, collect.size());
+        return ans;
     }
 }
