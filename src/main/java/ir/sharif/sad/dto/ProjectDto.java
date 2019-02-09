@@ -16,15 +16,17 @@ public class ProjectDto {
     @Nullable
     private ProjectStatus projectStatus;
     private String foundationName;
+    private Integer projectID;
 
     public static ProjectDto project2ProjectDto(Project project){
         ProjectDto dto = new ProjectDto();
         dto.projectStatus = project.getStatus();
-        dto.deadLine = project.getDeadLine();
+        dto.deadLine = new Timestamp(project.getDeadLine());
         dto.description = project.getDescription();
         dto.primaryMoney = project.getPrimaryMoney();
         dto.paidSoFar = project.getPaidSoFar();
         dto.foundationName = project.getFoundation().getName();
+        dto.projectID = project.getId();
         return dto;
     }
 }

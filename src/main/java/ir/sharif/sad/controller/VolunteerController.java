@@ -54,7 +54,7 @@ public class VolunteerController {
         }
     }
 
-    @GetMapping("/read/projects/")
+    @GetMapping("/read/projects")
     public ResponseEntity readProjects(Pageable page, @RequestParam(required = false) String filter) {
         Filter filterObj = new Filter(filter);
         return ResponseEntity.ok(volunteerService.readProjects(page, filterObj));

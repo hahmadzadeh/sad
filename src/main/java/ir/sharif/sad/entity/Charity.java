@@ -34,8 +34,8 @@ public class Charity {
     private String province;
     private String city;
     private int district;
-    private Timestamp timeLowerBound;
-    private Timestamp timeUpperBound;
+    private long timeLowerBound;
+    private long timeUpperBound;
     private ProjectStatus status;
 
     public Charity(CharityDto dto, Foundation foundation, Set<Profession> professions){
@@ -47,8 +47,8 @@ public class Charity {
         this.province = dto.getProvince();
         this.city = dto.getCity();
         this.district = dto.getDistrict();
-        this.timeLowerBound = dto.getTimeLowerBound();
-        this.timeUpperBound = dto.getTimeUpperBound();
+        this.timeLowerBound = dto.getTimeLowerBound().getTime();
+        this.timeUpperBound = dto.getTimeUpperBound().getTime();
         this.status = ProjectStatus.NOT_FINISHED;
         this.professions = professions;
     }

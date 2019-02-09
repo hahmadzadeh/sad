@@ -74,7 +74,8 @@ public class VolunteerService {
         Timestamp current = new Timestamp(System.currentTimeMillis());
         Specification specified = filter.getSpecified();
         Page<Project> all = projectRepository.findAll(specified, pageRequest);
-        all.get().filter(e -> e.getDeadLine().before(current) && e.getStatus() == ProjectStatus.NOT_FINISHED)
+        all.get().filter(e -> e.getDeadLine() < current.getTime()
+                && e.getStatus() == ProjectStatus.NOT_FINISHED)
                 .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
         List<ProjectDto> collect = all.get().map(ProjectDto::project2ProjectDto).collect(Collectors.toList());
         PageImpl<ProjectDto> projectDtos = new PageImpl<>(collect, page, all.getTotalElements());
@@ -86,7 +87,7 @@ public class VolunteerService {
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         Optional<Project> byId = projectRepository.findById(id);
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        if (byEmail.isPresent() && byId.isPresent() && byId.get().getDeadLine().after(current)) {
+        if (byEmail.isPresent() && byId.isPresent() && byId.get().getDeadLine() > current.getTime()) {
             Project project = byId.get();
             Volunteer volunteer = byEmail.get();
             if (amount <= project.getRemainingMoney() && amount > 0) {
@@ -177,7 +178,7 @@ public class VolunteerService {
             throw new EntityNotExistException("project does not exist");
         }
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        if (byId.get().getDeadLine().before(current) && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
+        if (byId.get().getDeadLine() < current.getTime() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
             byId.get().setStatus(ProjectStatus.FINISHED);
         }
         return ProjectDto.project2ProjectDto(byId.get());

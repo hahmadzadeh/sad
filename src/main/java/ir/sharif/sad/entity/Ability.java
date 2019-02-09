@@ -3,6 +3,7 @@ package ir.sharif.sad.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ir.sharif.sad.dto.AbilityDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -10,13 +11,14 @@ import javax.persistence.*;
 @Data
 @Table(name = "ability")
 @JsonIgnoreProperties(value = {"volunteer", "profession"})
+@NoArgsConstructor
 public class Ability {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ability_id")
     private int id;
     @ManyToOne
-    @JoinColumn(name = "charity_id")
+    @JoinColumn(name = "profession_id")
     private Profession profession;
     private String freeTime;
     private String province;

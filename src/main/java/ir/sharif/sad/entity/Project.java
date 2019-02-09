@@ -22,7 +22,7 @@ public class Project {
     private long primaryMoney;
     private long paidSoFar;
     private String description;
-    private Timestamp deadLine;
+    private long deadLine;
     private ProjectStatus status;
 
     @ManyToOne
@@ -36,7 +36,7 @@ public class Project {
         this.primaryMoney = dto.getPrimaryMoney();
         this.paidSoFar = 0;
         this.description = dto.getDescription();
-        this.deadLine = dto.getDeadLine();
+        this.deadLine = dto.getDeadLine().getTime();
         this.foundation = foundation;
         this.status = ProjectStatus.NOT_FINISHED;
     }
