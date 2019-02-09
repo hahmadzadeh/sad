@@ -64,10 +64,10 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer fillAbilities(VolunteerDto volunteerDto, Volunteer volunteer) {
-        Stream<ProfessionDto> professionDtoStream = volunteerDto.getProfessions().stream()
-                .filter(e -> professionRepository.findByName(e.getName()).isPresent());
+        Stream<String> professionDtoStream = volunteerDto.getProfessions().stream()
+                .filter(e -> professionRepository.findByName(e).isPresent());
         professionDtoStream.forEach(e -> volunteer.getProfessions()
-                .add(professionRepository.findByName(e.getName()).get()));
+                .add(professionRepository.findByName(e).get()));
         return volunteer;
     }
 
