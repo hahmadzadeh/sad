@@ -1,5 +1,6 @@
 package ir.sharif.sad.service;
 
+import ir.sharif.sad.dto.AbilityDto;
 import ir.sharif.sad.exceptions.InvalidAmountException;
 import ir.sharif.sad.dto.VolunteerDto;
 import ir.sharif.sad.dto.VolunteerRequestDto;
@@ -7,6 +8,7 @@ import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import ir.sharif.sad.enumerators.State;
 import ir.sharif.sad.repository.CharityRepository;
+import ir.sharif.sad.repository.ProfessionRepository;
 import ir.sharif.sad.repository.ProjectRepository;
 import ir.sharif.sad.repository.VolunteerRepository;
 import org.slf4j.Logger;
@@ -21,26 +23,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class VolunteerService {
     private final Logger logger = LoggerFactory.getLogger(VolunteerService.class);
     @Value("${page.size}")
     private Integer pageSize;
-    private VolunteerRepository volunteerRepository;
-    private ProjectRepository projectRepository;
-    private CharityRepository charityRepository;
+    private final VolunteerRepository volunteerRepository;
+    private final ProjectRepository projectRepository;
+    private final CharityRepository charityRepository;
+    private final ProfessionRepository professionRepository;
 
     @Autowired
     public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository
-            , CharityRepository charityRepository) {
+            , CharityRepository charityRepository, ProfessionRepository professionRepository) {
         this.volunteerRepository = volunteerRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
+        this.professionRepository = professionRepository;
     }
 
 
-    public Volunteer save(VolunteerDto volunteerDto, String name){
+    public Volunteer save(VolunteerDto volunteerDto, String name) {
         Volunteer volunteer = new Volunteer(volunteerDto, name);
         volunteerRepository.save(volunteer);
         logger.info("create new volunteer");
@@ -48,8 +53,11 @@ public class VolunteerService {
     }
 
     @Transactional
-    public Volunteer fillAbilities(VolunteerDto volunteerDto, Volunteer volunteer){
-        volunteerDto.getAbilities().forEach(e -> volunteer.getAbilities().add(new Ability(e, volunteer)));
+    public Volunteer fillAbilities(VolunteerDto volunteerDto, Volunteer volunteer) {
+        Stream<AbilityDto> abilityDtoStream = volunteerDto.getAbilities().stream()
+                .filter(e -> professionRepository.findByName(e.getProfession()).isPresent());
+        abilityDtoStream.forEach(e -> volunteer.getAbilities()
+                .add(new Ability(e, volunteer, professionRepository.findByName(e.getProfession()).get())));
         return volunteer;
     }
 
@@ -65,7 +73,7 @@ public class VolunteerService {
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         Optional<Project> byId = projectRepository.findById(id);
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        if (byEmail.isPresent()&& byId.isPresent() && byId.get().getDeadLine().after(current)) {
+        if (byEmail.isPresent() && byId.isPresent() && byId.get().getDeadLine().after(current)) {
             Project project = byId.get();
             Volunteer volunteer = byEmail.get();
             if (amount <= project.getMoney() && amount > 0) {
@@ -95,9 +103,9 @@ public class VolunteerService {
 
     public Volunteer readOne(String name) throws Exception {
         Optional<Volunteer> byId = volunteerRepository.findOneByEmail(name);
-        if(byId.isPresent()){
+        if (byId.isPresent()) {
             return byId.get();
-        }else {
+        } else {
             throw new Exception("volunteer is not signed up yet");
         }
     }
@@ -105,10 +113,10 @@ public class VolunteerService {
     public VolunteerRequest makeRequest(VolunteerRequestDto dto, String name, Integer id) throws Exception {
         Optional<Charity> byId = charityRepository.findById(id);
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
-        if(byId.isPresent() && byEmail.isPresent()){
+        if (byId.isPresent() && byEmail.isPresent()) {
             Charity charity = byId.get();
             Volunteer volunteer = byEmail.get();
-            if(isQualified(volunteer, charity)){
+            if (isQualified(volunteer, charity)) {
                 VolunteerRequest request = new VolunteerRequest();
                 request.setCharity(charity);
                 request.setVolunteer(volunteer);
@@ -116,14 +124,14 @@ public class VolunteerService {
                 request.setDescription(dto.getDescription());
                 charity.getRequests().add(request);
                 volunteer.getVolunteerRequests().add(request);
-            }else{
+            } else {
                 throw new Exception("volunteer is not qualified");
             }
         }
         throw new Exception("volunteer or charity dose not exist");
     }
 
-    private boolean isQualified(Volunteer volunteer, Charity charity){
+    private boolean isQualified(Volunteer volunteer, Charity charity) {
         return volunteer.getAge() >= charity.getAgeLowerBound() && volunteer.getAge() <= charity.getAgeUpperBound() &&
                 volunteer.getGender() == charity.getGender();
     }

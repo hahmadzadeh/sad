@@ -9,27 +9,29 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "ability")
-@JsonIgnoreProperties(value = {"volunteer"})
+@JsonIgnoreProperties(value = {"volunteer", "profession"})
 public class Ability {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ability_id")
     private int id;
-    private String profession;
+    @ManyToOne
+    @JoinColumn(name = "charity_id")
+    private Profession profession;
     private String freeTime;
     private String province;
     private String city;
-    private int district;
+    private String district;
     @ManyToOne
     @JoinColumn(name = "volunteer_id")
     private Volunteer volunteer;
 
-    public Ability(AbilityDto dto, Volunteer volunteer){
-        this.profession = dto.getProfession();
+    public Ability(AbilityDto dto, Volunteer volunteer, Profession profession){
+        this.profession = profession;
         this.freeTime = dto.getFreeTime();
         this.province = dto.getProvince();
         this.city = dto.getCity();
-        this.district = dto.getDistrict();
+        this.district = dto.getDistricts().parallelStream().map(Object::toString).reduce((x, y)-> x + "#" + y).get();
         this.volunteer = volunteer;
     }
 }

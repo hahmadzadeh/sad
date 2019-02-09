@@ -2,12 +2,14 @@ package ir.sharif.sad.dto;
 
 import ir.sharif.sad.enumerators.Gender;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.List;
 
 
 @Data
+@NoArgsConstructor
 public class VolunteerDto {
     private String name;
     private Gender gender;

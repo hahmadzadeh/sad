@@ -16,29 +16,16 @@ import javax.swing.text.html.parser.Entity;
 @RepositoryRestController
 @RequestMapping("/login/")
 public class LoginController {
-
-    private final FoundationService foundationService;
-    private final VolunteerService volunteerService;
-    private final UserRepository userRepository;
-
-    @Autowired
-    public LoginController(FoundationService foundationService, VolunteerService volunteerService, UserRepository userRepository) {
-        this.foundationService = foundationService;
-        this.volunteerService = volunteerService;
-        this.userRepository = userRepository;
-    }
-
     @PostMapping(value = "/foundation")
-    public ResponseEntity homeFoundation() throws Exception {
+    public ResponseEntity homeFoundation(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(foundationService.readOne(auth.getName()));
+        return ResponseEntity.ok("welcome " + auth.getName());
     }
-
 
     @PostMapping(value = "/volunteer")
-    public ResponseEntity homeVolunteer() throws Exception {
+    public ResponseEntity homeVolunteer(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(volunteerService.readOne(auth.getName()));
+        return ResponseEntity.ok("welcome " + auth.getName());
     }
 
     @PostMapping(value = "/admin")

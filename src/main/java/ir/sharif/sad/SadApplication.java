@@ -1,8 +1,11 @@
 package ir.sharif.sad;
 
+import ir.sharif.sad.entity.Profession;
 import ir.sharif.sad.entity.Role;
 import ir.sharif.sad.entity.User;
+import ir.sharif.sad.enumerators.Category;
 import ir.sharif.sad.enumerators.Roles;
+import ir.sharif.sad.repository.ProfessionRepository;
 import ir.sharif.sad.repository.RoleRepository;
 import ir.sharif.sad.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +23,14 @@ public class SadApplication implements CommandLineRunner {
 	private final RoleRepository roleRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final UserRepository userRepository;
+	private final ProfessionRepository professionRepository;
 
 	@Autowired
-	public SadApplication(RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
+	public SadApplication(RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository, ProfessionRepository professionRepository) {
 		this.roleRepository = roleRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		this.userRepository = userRepository;
+		this.professionRepository = professionRepository;
 	}
 
 	public static void main(String[] args) {
@@ -55,7 +60,12 @@ public class SadApplication implements CommandLineRunner {
 			user.setPassword(bCryptPasswordEncoder.encode("nimda"));
 			userRepository.saveAndFlush(user);
 		}
-
+		List<Profession> professions = professionRepository.findAll();
+		if(professions.isEmpty()){
+			professionRepository.save(new Profession("نجاری", Category.TECH));
+			professionRepository.save(new Profession("نظافت", Category.GENERAL));
+			professionRepository.save(new Profession("زبان", Category.ACADEM));
+		}
 	}
 }
 
