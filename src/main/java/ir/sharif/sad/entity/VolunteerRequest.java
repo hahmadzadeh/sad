@@ -1,12 +1,16 @@
 package ir.sharif.sad.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ir.sharif.sad.enumerators.State;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@JsonIgnoreProperties({"charity", "volunteer"})
+@ToString(exclude = {"charity", "volunteer"})
 public class VolunteerRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

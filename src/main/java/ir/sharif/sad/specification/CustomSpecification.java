@@ -41,6 +41,8 @@ public class CustomSpecification<T> implements Specification<T> {
             } else {
                 return builder.equal(root.get(criteria.getKey()), criteria.getValue());
             }
+        }else if (criteria.getOperation().equalsIgnoreCase("#")){
+            builder.equal(root.get(criteria.getKey()), criteria.getValue().toString());
         }
         return null;
     }

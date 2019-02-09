@@ -6,6 +6,7 @@ import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(value = {"foundation"})
 @NoArgsConstructor
+@ToString(exclude = {"foundation"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,17 +41,6 @@ public class Project {
         this.deadLine = dto.getDeadLine().getTime();
         this.foundation = foundation;
         this.status = ProjectStatus.NOT_FINISHED;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", money=" + primaryMoney +
-                ", description='" + description + '\'' +
-                ", deadLine=" + deadLine +
-                '}';
     }
 
     public long getRemainingMoney(){

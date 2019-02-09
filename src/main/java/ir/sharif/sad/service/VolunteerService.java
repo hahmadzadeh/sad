@@ -191,7 +191,7 @@ public class VolunteerService {
         Specification specified = filterObj.getSpecified();
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(email);
         Volunteer volunteer = byEmail.get();
-        SearchCriteria searchCriteria = new SearchCriteria("volunteer", ":",  volunteer);
+        SearchCriteria searchCriteria = new SearchCriteria("volunteer", "#",  volunteer);
         if (specified == null) {
             specified = new CustomSpecification(searchCriteria);
         }else{

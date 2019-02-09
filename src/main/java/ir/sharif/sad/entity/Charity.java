@@ -7,6 +7,7 @@ import ir.sharif.sad.enumerators.Gender;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Data
 @JsonIgnoreProperties(value = {"foundation"})
 @NoArgsConstructor
+@ToString(exclude = {"foundation"})
 public class Charity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -62,20 +64,4 @@ public class Charity {
     private Set<Profession> professions;
     @OneToMany(mappedBy = "charity", cascade = CascadeType.ALL)
     private List<VolunteerRequest> requests;
-
-    @Override
-    public String toString(){
-        return "Charity{" +
-                "id = " + id +
-                        ", description = " + description +
-                        ", gender = " + gender +
-                        ", ageLowerBound = " + ageLowerBound +
-                        ", ageUpperBound = " + ageUpperBound +
-                        ", province = " + province +
-                        ", city = " + city +
-                        ", district = " + district +
-                        ", timeLowerBound = " + timeLowerBound +
-                        ", timeUpperBound = " + timeUpperBound +
-                        ", status = " + status + "}";
-    }
 }

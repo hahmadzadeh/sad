@@ -3,6 +3,7 @@ package ir.sharif.sad.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 @Data
 @JsonIgnoreProperties(value = {"volunteer", "project"})
 @NoArgsConstructor
+@ToString(exclude = {"volunteer","project"})
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

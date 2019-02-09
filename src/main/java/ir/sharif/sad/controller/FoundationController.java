@@ -55,8 +55,12 @@ public class FoundationController {
     }
 
     @PostMapping("/create/charity")
-    public ResponseEntity createCharity(@RequestBody CharityDto charityDto) throws Exception {
-        return ResponseEntity.ok(foundationService.createCharity(charityDto));
+    public ResponseEntity createCharity(@RequestBody CharityDto charityDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            return ResponseEntity.ok(foundationService.createCharity(charityDto, auth.getName()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
-
 }

@@ -51,14 +51,14 @@ public class FoundationService {
     }
 
     @Transactional
-    public Charity createCharity(CharityDto charityDto) throws Exception{
-        Optional<Foundation> byId = foundationRepository.findById(charityDto.getFoundationId());
+    public CharityDto createCharity(CharityDto charityDto, String email) throws Exception{
+        Optional<Foundation> byId = foundationRepository.findOneByEmail(email);
         if(byId.isPresent()){
             Foundation foundation = byId.get();
             Set<Profession> professions = professionRepository.findByNameIn(charityDto.getProfessions());
             Charity charity = new Charity(charityDto, foundation, professions);
             foundation.getCharities().add(charity);
-            return charity;
+            return CharityDto.charity2CharityDto(charity);
         }else {
             throw new Exception("foundation not found");
         }
