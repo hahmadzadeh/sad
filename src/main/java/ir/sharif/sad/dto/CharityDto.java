@@ -18,8 +18,8 @@ public class CharityDto {
     private String province;
     private String city;
     private int district;
-    private Timestamp timeLowerBound;
-    private Timestamp timeUpperBound;
+    private Timestamp deadLine;
+    private Timestamp startTime;
     private Set<String> professions;
     private Integer foundationId;
     private long numWeeks;
@@ -34,8 +34,8 @@ public class CharityDto {
         dto.province = charity.getProvince();
         dto.city = charity.getCity();
         dto.district = charity.getDistrict();
-        dto.timeLowerBound = new Timestamp(charity.getTimeLowerBound());
-        dto.timeUpperBound = new Timestamp(charity.getTimeUpperBound());
+        dto.deadLine = new Timestamp(charity.getDeadLine());
+        dto.startTime = new Timestamp(charity.getStartTime());
         dto.professions = charity.getProfessions().parallelStream().map(Profession::getName).collect(Collectors.toSet());
         dto.foundationId = charity.getFoundation().getId();
         dto.numWeeks = charity.getNumWeeks();

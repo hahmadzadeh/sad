@@ -36,8 +36,8 @@ public class Charity {
     private String province;
     private String city;
     private int district;
-    private long timeLowerBound;
-    private long timeUpperBound;
+    private long deadLine;
+    private long startTime;
     private ProjectStatus status;
     private long numWeeks;
     private String schedule;
@@ -51,8 +51,8 @@ public class Charity {
         this.province = dto.getProvince();
         this.city = dto.getCity();
         this.district = dto.getDistrict();
-        this.timeLowerBound = dto.getTimeLowerBound().getTime();
-        this.timeUpperBound = dto.getTimeUpperBound().getTime();
+        this.deadLine = dto.getDeadLine().getTime();
+        this.startTime = dto.getStartTime().getTime();
         this.status = ProjectStatus.NOT_FINISHED;
         this.professions = professions;
         this.schedule = dto.getSchedule();

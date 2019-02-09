@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,15 +37,17 @@ public class VolunteerService {
     private final CharityRepository charityRepository;
     private final ProfessionRepository professionRepository;
     private final PaymentRepository paymentRepository;
+    private final RequestRepository requestRepository;
 
     @Autowired
     public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository
-            , CharityRepository charityRepository, ProfessionRepository professionRepository, PaymentRepository paymentRepository) {
+            , CharityRepository charityRepository, ProfessionRepository professionRepository, PaymentRepository paymentRepository, RequestRepository requestRepository) {
         this.volunteerRepository = volunteerRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
         this.professionRepository = professionRepository;
         this.paymentRepository = paymentRepository;
+        this.requestRepository = requestRepository;
     }
 
 
@@ -111,14 +112,22 @@ public class VolunteerService {
         }
     }
 
-    public Page<Charity> readCharities(Integer page) {
-        PageRequest pageRequest = new PageRequest(page, pageSize, Sort.Direction.ASC, "deadLine");
+    @Transactional
+    public Page<CharityDto> readCharities(Pageable page, Filter filter) {
+        PageRequest pageRequest = new PageRequest(page.getPageNumber()
+                , pageSize, Sort.Direction.ASC, "deadLine");
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        return charityRepository.findByStatusAndTimeUpperBoundGreaterThanEqual
-                (ProjectStatus.NOT_FINISHED, current, pageRequest);
+        Specification specified = filter.getSpecified();
+        Page<Charity> all = charityRepository.findAll(specified, pageRequest);
+        all.get().filter(e -> e.getDeadLine() < current.getTime()
+                && e.getStatus() == ProjectStatus.NOT_FINISHED)
+                .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
+        List<CharityDto> collect = all.get().map(CharityDto::charity2CharityDto).collect(Collectors.toList());
+        PageImpl<CharityDto> charityDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        return charityDtos;
     }
 
-    public VolunteerDto readOne(String name) throws Exception {
+    public VolunteerDto readMyProfile(String name) throws Exception {
         Optional<Volunteer> byId = volunteerRepository.findOneByEmail(name);
         if (byId.isPresent()) {
             return VolunteerDto.volunteer2VolunteerDto(byId.get());
@@ -128,10 +137,10 @@ public class VolunteerService {
         }
     }
 
-    public VolunteerRequest makeRequest(VolunteerRequestDto dto, String name, Integer id) throws Exception {
-        Optional<Charity> byId = charityRepository.findById(id);
+    public VolunteerRequestDto makeRequest(VolunteerRequestDto dto, String name) throws Exception {
+        Optional<Charity> byId = charityRepository.findById(dto.getCharityId());
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
-        if (byId.isPresent() && byEmail.isPresent()) {
+        if (byId.isPresent() && byEmail.isPresent() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
             Charity charity = byId.get();
             Volunteer volunteer = byEmail.get();
             if (isQualified(volunteer, charity)) {
@@ -142,6 +151,7 @@ public class VolunteerService {
                 request.setDescription(dto.getDescription());
                 charity.getRequests().add(request);
                 volunteer.getVolunteerRequests().add(request);
+                return VolunteerRequestDto.volunteerRequest2VolunteerRequestDto(request);
             } else {
                 throw new Exception("volunteer is not qualified");
             }
@@ -191,16 +201,47 @@ public class VolunteerService {
         Specification specified = filterObj.getSpecified();
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(email);
         Volunteer volunteer = byEmail.get();
-        SearchCriteria searchCriteria = new SearchCriteria("volunteer", "#",  volunteer);
+        SearchCriteria searchCriteria = new SearchCriteria("volunteer", "#", volunteer);
         if (specified == null) {
             specified = new CustomSpecification(searchCriteria);
-        }else{
+        } else {
             Specification.where(specified).and(new CustomSpecification(searchCriteria));
         }
         Page<Payment> all = paymentRepository.findAll(specified, page);
         List<PaymentDto> collect = all.get()
                 .map(PaymentDto::PaymentDto2Payment).collect(Collectors.toList());
         PageImpl<PaymentDto> ans = new PageImpl<PaymentDto>(collect, page, collect.size());
+        return ans;
+    }
+
+    @Transactional
+    public CharityDto readOneCharity(Integer id) throws EntityNotExistException {
+        Optional<Charity> byId = charityRepository.findById(id);
+        if (!byId.isPresent()) {
+            logger.error("project does not exist");
+            throw new EntityNotExistException("project does not exist");
+        }
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        if (byId.get().getDeadLine() < current.getTime() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
+            byId.get().setStatus(ProjectStatus.FINISHED);
+        }
+        return CharityDto.charity2CharityDto(byId.get());
+    }
+
+    public Page<VolunteerRequestDto> readMyRequests(Pageable page, Filter filterObj, String name) {
+        Specification specified = filterObj.getSpecified();
+        Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
+        Volunteer volunteer = byEmail.get();
+        SearchCriteria searchCriteria = new SearchCriteria("volunteer", "#", volunteer);
+        if (specified == null) {
+            specified = new CustomSpecification(searchCriteria);
+        } else {
+            Specification.where(specified).and(new CustomSpecification(searchCriteria));
+        }
+        Page<VolunteerRequest> all = requestRepository.findAll(specified, page);
+        List<VolunteerRequestDto> collect = all.get()
+                .map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
+        PageImpl<VolunteerRequestDto> ans = new PageImpl<>(collect, page, collect.size());
         return ans;
     }
 }

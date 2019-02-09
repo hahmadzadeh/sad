@@ -73,7 +73,7 @@ public class VolunteerController {
     public ResponseEntity readMyProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
-            return ResponseEntity.ok(volunteerService.readOne(auth.getName()));
+            return ResponseEntity.ok(volunteerService.readMyProfile(auth.getName()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -86,9 +86,26 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteerService.readMyPayments(page, filterObj, auth.getName()));
     }
 
-    @GetMapping("/read/charities/{page}")
-    public ResponseEntity readCharities(@PathVariable Integer page) {
-        return ResponseEntity.ok(volunteerService.readCharities(page));
+    @GetMapping("/read/my-request")
+    public ResponseEntity readMyRequests(Pageable page,@RequestParam(required = false) String filter) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Filter filterObj = new Filter(filter);
+        return ResponseEntity.ok(volunteerService.readMyRequests(page, filterObj, auth.getName()));
+    }
+
+    @GetMapping("/read/charities}")
+    public ResponseEntity readCharities(Pageable page, @RequestParam(required = false) String filter) {
+        Filter filterObj = new Filter(filter);
+        return ResponseEntity.ok(volunteerService.readCharities(page, filterObj));
+    }
+
+    @GetMapping("/read/charity/{id}")
+    public ResponseEntity readCharity(@PathVariable Integer id){
+        try {
+            return ResponseEntity.ok(volunteerService.readOneCharity(id));
+        } catch (EntityNotExistException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/create/payment")
@@ -102,9 +119,13 @@ public class VolunteerController {
         }
     }
 
-    @PostMapping("/create/{id}/request")
-    public ResponseEntity makeRequest(@RequestBody VolunteerRequestDto dto, @PathVariable Integer id) throws Exception {
+    @PostMapping("/create/request")
+    public ResponseEntity makeRequest(@RequestBody VolunteerRequestDto dto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(volunteerService.makeRequest(dto, auth.getName(), id));
+        try {
+            return ResponseEntity.ok(volunteerService.makeRequest(dto, auth.getName()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
