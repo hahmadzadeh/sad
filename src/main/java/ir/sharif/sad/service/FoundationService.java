@@ -38,13 +38,13 @@ public class FoundationService {
     }
 
     @Transactional
-    public Project createProject(ProjectDto projectDto, int id) throws Exception {
-        Optional<Foundation> byId = foundationRepository.findById(id);
+    public ProjectDto createProject(ProjectDto projectDto, String email) throws Exception {
+        Optional<Foundation> byId = foundationRepository.findOneByEmail(email);
         if(byId.isPresent()){
             Foundation foundation = byId.get();
             Project project = new Project(projectDto, foundation);
             foundation.getProjects().add(project);
-            return project;
+            return ProjectDto.project2ProjectDto(project);
         }else {
             throw new Exception("foundation not found");
         }

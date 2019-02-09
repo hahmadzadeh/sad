@@ -7,6 +7,7 @@ import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.service.FoundationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -32,9 +33,14 @@ public class FoundationController {
         return ResponseEntity.ok(foundationService.save(foundationDto, auth.getName()));
     }
 
-    @PostMapping("/create/{id}/project")
-    public ResponseEntity createProject(@RequestBody ProjectDto projectDto, @PathVariable int id) throws Exception {
-        return  ResponseEntity.ok(foundationService.createProject(projectDto, id));
+    @PostMapping("/create/project")
+    public ResponseEntity createProject(@RequestBody ProjectDto projectDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            return  ResponseEntity.ok(foundationService.createProject(projectDto, auth.getName()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/create/{id}/charity")
