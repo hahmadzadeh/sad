@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -137,12 +138,18 @@ public class VolunteerService {
         }
     }
 
+    @Transactional
     public VolunteerRequestDto makeRequest(VolunteerRequestDto dto, String name) throws Exception {
         Optional<Charity> byId = charityRepository.findById(dto.getCharityId());
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         if (byId.isPresent() && byEmail.isPresent() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
             Charity charity = byId.get();
             Volunteer volunteer = byEmail.get();
+            Set<VolunteerRequest> collect = volunteer.getVolunteerRequests().parallelStream()
+                    .filter(e -> e.getCharity().getId() == charity.getId()).collect(Collectors.toSet());
+            if(!collect.isEmpty()){
+                throw new Exception("you are already requested");
+            }
             if (isQualified(volunteer, charity)) {
                 VolunteerRequest request = new VolunteerRequest();
                 request.setCharity(charity);

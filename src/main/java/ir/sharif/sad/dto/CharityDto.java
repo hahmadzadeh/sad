@@ -24,6 +24,7 @@ public class CharityDto {
     private Integer foundationId;
     private long numWeeks;
     private String schedule;
+    private Integer charityId;
 
     public static CharityDto charity2CharityDto(Charity charity){
         CharityDto dto = new CharityDto();
@@ -40,6 +41,7 @@ public class CharityDto {
         dto.foundationId = charity.getFoundation().getId();
         dto.numWeeks = charity.getNumWeeks();
         dto.schedule = charity.getSchedule();
+        dto.charityId = charity.getId();
         return dto;
     }
 }

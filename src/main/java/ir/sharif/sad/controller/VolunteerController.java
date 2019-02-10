@@ -93,7 +93,7 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteerService.readMyRequests(page, filterObj, auth.getName()));
     }
 
-    @GetMapping("/read/charities}")
+    @GetMapping("/read/charities")
     public ResponseEntity readCharities(Pageable page, @RequestParam(required = false) String filter) {
         Filter filterObj = new Filter(filter);
         return ResponseEntity.ok(volunteerService.readCharities(page, filterObj));
