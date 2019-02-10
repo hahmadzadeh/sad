@@ -5,17 +5,17 @@ import ir.sharif.sad.dto.CharityDto;
 import ir.sharif.sad.dto.FoundationDto;
 import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.service.FoundationService;
+import ir.sharif.sad.specification.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 
 @RepositoryRestController
 @Secured("ROLE_FOUNDATION")
@@ -52,6 +52,20 @@ public class FoundationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/read/projects")
+    public ResponseEntity readMyProject(Pageable page, @RequestParam String filter){
+        Filter filterObj = new Filter(filter);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(foundationService.readProjects(filterObj, auth.getName(), page));
+    }
+
+    @GetMapping("/read/charities")
+    public ResponseEntity readMyCharity(Pageable page, @RequestParam String filter){
+        Filter filterObj = new Filter(filter);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(foundationService.readCharity(filterObj, auth.getName(), page));
     }
 
     @PostMapping("/create/charity")

@@ -7,25 +7,40 @@ import ir.sharif.sad.entity.Charity;
 import ir.sharif.sad.entity.Foundation;
 import ir.sharif.sad.entity.Profession;
 import ir.sharif.sad.entity.Project;
+import ir.sharif.sad.enumerators.ProjectStatus;
+import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.FoundationRepository;
 import ir.sharif.sad.repository.ProfessionRepository;
+import ir.sharif.sad.repository.ProjectRepository;
+import ir.sharif.sad.specification.CustomSpecification;
+import ir.sharif.sad.specification.Filter;
+import ir.sharif.sad.specification.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FoundationService {
     private FoundationRepository foundationRepository;
     private ProfessionRepository professionRepository;
+    private final ProjectRepository projectRepository;
+    private final CharityRepository charityRepository;
 
 
     @Autowired
-    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository){
+    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository, ProjectRepository projectRepository, CharityRepository charityRepository){
         this.foundationRepository = foundationRepository;
         this.professionRepository = professionRepository;
+        this.projectRepository = projectRepository;
+        this.charityRepository = charityRepository;
     }
 
 
@@ -81,5 +96,48 @@ public class FoundationService {
         foundation.setAddress(foundationDto.getAddress());
         foundation.setPhone(foundationDto.getPhone());
         return FoundationDto.Foundation2FoundationDto(foundation);
+    }
+
+    @Transactional
+    public Page<ProjectDto> readProjects(Filter filter, String name, Pageable page) {
+        PageRequest pageRequest = new PageRequest(page.getPageNumber(), page.getPageSize(), Sort.Direction.ASC, "deadLine");
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        Specification specified = filter.getSpecified();
+        Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
+        SearchCriteria searchCriteria = new SearchCriteria("foundation", "#", oneByEmail.get());
+        if(specified == null){
+            specified = new CustomSpecification(searchCriteria);
+        }else {
+            Specification.where(specified).and(new CustomSpecification(searchCriteria));
+        }
+        Page<Project> all = projectRepository.findAll(specified, pageRequest);
+        all.get().filter(e -> e.getDeadLine() < current.getTime()
+                && e.getStatus() == ProjectStatus.NOT_FINISHED)
+                .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
+        List<ProjectDto> collect = all.get().map(ProjectDto::project2ProjectDto).collect(Collectors.toList());
+        PageImpl<ProjectDto> projectDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        return projectDtos;
+    }
+
+    @Transactional
+    public Page<CharityDto> readCharity(Filter filter, String name, Pageable page) {
+        PageRequest pageRequest = new PageRequest(page.getPageNumber()
+                , page.getPageSize(), Sort.Direction.ASC, "deadLine");
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        Specification specified = filter.getSpecified();
+        Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
+        SearchCriteria searchCriteria = new SearchCriteria("foundation", "#", oneByEmail.get());
+        if(specified == null){
+            specified = new CustomSpecification(searchCriteria);
+        }else {
+            Specification.where(specified).and(new CustomSpecification(searchCriteria));
+        }
+        Page<Charity> all = charityRepository.findAll(specified, pageRequest);
+        all.get().filter(e -> e.getDeadLine() < current.getTime()
+                && e.getStatus() == ProjectStatus.NOT_FINISHED)
+                .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
+        List<CharityDto> collect = all.get().map(CharityDto::charity2CharityDto).collect(Collectors.toList());
+        PageImpl<CharityDto> charityDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        return charityDtos;
     }
 }
