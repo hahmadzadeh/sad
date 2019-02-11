@@ -25,6 +25,8 @@ public class Foundation {
     private List<Charity> charities;
     @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
     private List<Project> projects;
+    @OneToMany(mappedBy = "foundation", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     public Foundation(FoundationDto dto, String email) {
         this.name = dto.getName();

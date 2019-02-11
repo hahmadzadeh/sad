@@ -6,11 +6,9 @@ import ir.sharif.sad.dto.ProjectDto;
 import ir.sharif.sad.dto.VolunteerRequestDto;
 import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
+import ir.sharif.sad.enumerators.State;
 import ir.sharif.sad.exceptions.EntityNotExistException;
-import ir.sharif.sad.repository.CharityRepository;
-import ir.sharif.sad.repository.FoundationRepository;
-import ir.sharif.sad.repository.ProfessionRepository;
-import ir.sharif.sad.repository.ProjectRepository;
+import ir.sharif.sad.repository.*;
 import ir.sharif.sad.specification.CustomSpecification;
 import ir.sharif.sad.specification.Filter;
 import ir.sharif.sad.specification.SearchCriteria;
@@ -32,14 +30,15 @@ public class FoundationService {
     private ProfessionRepository professionRepository;
     private final ProjectRepository projectRepository;
     private final CharityRepository charityRepository;
-
+    private final RequestRepository requestRepository;
 
     @Autowired
-    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository, ProjectRepository projectRepository, CharityRepository charityRepository){
+    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository, ProjectRepository projectRepository, CharityRepository charityRepository, RequestRepository requestRepository){
         this.foundationRepository = foundationRepository;
         this.professionRepository = professionRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
+        this.requestRepository = requestRepository;
     }
 
 
@@ -140,16 +139,28 @@ public class FoundationService {
         return charityDtos;
     }
 
-    public Page<VolunteerRequestDto> readMyRequests(Filter filter, Pageable page, Integer id, String name) throws EntityNotExistException {
+    public Page<VolunteerRequestDto> readMyRequests(Pageable page, Integer id, String name) throws EntityNotExistException {
         Optional<Charity> byId = charityRepository.findById(id);
         if(byId.isPresent() && byId.get().getFoundation().getEmail().equals(name)){
-            Specification specified = filter.getSpecified();
-            Page<VolunteerRequest> all = charityRepository.findAll(specified, page);
-            List<VolunteerRequestDto> collect = all.get().
+            List<VolunteerRequest> all = byId.get().getRequests();
+            List<VolunteerRequestDto> collect = all.parallelStream().
                     map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
-            return new PageImpl<>(collect, page, all.getTotalElements());
+            return new PageImpl<>(collect, page, all.size());
         }else{
             throw new EntityNotExistException("charity is not found");
+        }
+    }
+
+    @Transactional
+    public VolunteerRequestDto approveRequest(Integer id, String email) throws EntityNotExistException {
+        Optional<VolunteerRequest> byId = requestRepository.findById(id);
+        if(!byId.isPresent() || !byId.get().getCharity().getFoundation().getEmail().equals(email)
+                || byId.get().getState() != State.INQUEUE){
+            throw new EntityNotExistException("volunteer request is not found");
+        }else {
+            byId.get().getCharity().getRequests().parallelStream().forEach(e->e.setState(State.DECLINE));
+            byId.get().setState(State.APPROVED);
+            return VolunteerRequestDto.volunteerRequest2VolunteerRequestDto(byId.get());
         }
     }
 }

@@ -27,6 +27,8 @@ public class Volunteer {
     private int district;
     private String phone;
     private String interests;
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
     private List<Payment> payments;

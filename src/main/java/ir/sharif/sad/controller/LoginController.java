@@ -1,5 +1,6 @@
 package ir.sharif.sad.controller;
 
+import ir.sharif.sad.dto.LoginDto;
 import ir.sharif.sad.repository.UserRepository;
 import ir.sharif.sad.service.FoundationService;
 import ir.sharif.sad.service.VolunteerService;
@@ -20,21 +21,18 @@ public class LoginController {
     @PostMapping(value = "/foundation")
     @Secured("ROLE_FOUNDATION")
     public ResponseEntity homeFoundation(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok("welcome " + auth.getName());
+        return ResponseEntity.ok(new LoginDto(true));
     }
 
     @PostMapping(value = "/volunteer")
     @Secured("ROLE_VOLUNTEER")
     public ResponseEntity homeVolunteer(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok("welcome " + auth.getName());
+        return ResponseEntity.ok(new LoginDto(true));
     }
 
     @PostMapping(value = "/admin")
     @Secured("ROLE_ADMIN")
     public ResponseEntity homeAdmin(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok("welcome " + auth.getName());
+        return ResponseEntity.ok(new LoginDto(true));
     }
 }

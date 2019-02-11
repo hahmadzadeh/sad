@@ -70,13 +70,22 @@ public class FoundationController {
     }
 
     @GetMapping("/read/charity/{id}/requests")
-    public ResponseEntity readRequests(Pageable page, @PathVariable Integer id, @RequestParam String filter) {
+    public ResponseEntity readRequests(Pageable page, @PathVariable Integer id) {
         try {
-            Filter filterObj = new Filter(filter);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            return ResponseEntity.ok(foundationService.readMyRequests(filterObj, page, id, auth.getName()));
+            return ResponseEntity.ok(foundationService.readMyRequests(page, id, auth.getName()));
         } catch (EntityNotExistException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/approve/request/{id}")
+    public ResponseEntity approveRequest(@PathVariable Integer id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            return ResponseEntity.ok(foundationService.approveRequest(id, auth.getName()));
+        } catch (EntityNotExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
