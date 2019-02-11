@@ -3,11 +3,10 @@ package ir.sharif.sad.service;
 import ir.sharif.sad.dto.CharityDto;
 import ir.sharif.sad.dto.FoundationDto;
 import ir.sharif.sad.dto.ProjectDto;
-import ir.sharif.sad.entity.Charity;
-import ir.sharif.sad.entity.Foundation;
-import ir.sharif.sad.entity.Profession;
-import ir.sharif.sad.entity.Project;
+import ir.sharif.sad.dto.VolunteerRequestDto;
+import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
+import ir.sharif.sad.exceptions.EntityNotExistException;
 import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.FoundationRepository;
 import ir.sharif.sad.repository.ProfessionRepository;
@@ -139,5 +138,18 @@ public class FoundationService {
         List<CharityDto> collect = all.get().map(CharityDto::charity2CharityDto).collect(Collectors.toList());
         PageImpl<CharityDto> charityDtos = new PageImpl<>(collect, page, all.getTotalElements());
         return charityDtos;
+    }
+
+    public Page<VolunteerRequestDto> readMyRequests(Filter filter, Pageable page, Integer id, String name) throws EntityNotExistException {
+        Optional<Charity> byId = charityRepository.findById(id);
+        if(byId.isPresent() && byId.get().getFoundation().getEmail().equals(name)){
+            Specification specified = filter.getSpecified();
+            Page<VolunteerRequest> all = charityRepository.findAll(specified, page);
+            List<VolunteerRequestDto> collect = all.get().
+                    map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
+            return new PageImpl<>(collect, page, all.getTotalElements());
+        }else{
+            throw new EntityNotExistException("charity is not found");
+        }
     }
 }
