@@ -25,7 +25,7 @@
             </div>
 
 
-            <form class="login100-form validate-form" action="/register/foundation" method="post" id="signup-form">
+            <form class="login100-form validate-form"  id="signup-form">
 					<span class="login100-form-title" id="form_start">
 						Member Sign Up
 					</span>
@@ -157,9 +157,16 @@
             jsonData[elem.name.toString()] = elem.value;
         }
         console.log(jsonData)
+
+
         $.ajax({
             method : "POST",
-            url: "http://192.119.12.117:1234/register/volunteer",
+            url: "https://saad-project.herokuapp.com/register/volunteer",
+            "headers": {
+                "Content-Type": "application/json",
+                // "cache-control": "no-cache",
+                // "Postman-Token": "c0d481ba-a8c7-4979-b311-88df8695e53a"
+            },
             data: JSON.stringify(jsonData),
             contentType: "application/json",
             dataType: "json",
