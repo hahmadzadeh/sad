@@ -54,20 +54,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-//        http.
-//                authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .antMatchers("/login").permitAll()
-//                .antMatchers("/registration").permitAll()
-//                .antMatchers("/admin/**").hasAuthority("ADMIN")
-//                .antMatchers("/foundations/**").hasAuthority("FOUNDATION")
-//                .antMatchers("/volunteer/**").hasAuthority("VOLUNTEER").anyRequest()
-//                .authenticated().and().csrf().disable().formLogin()
-//                .loginPage("/login").failureUrl("/login?error=true")
-//                .usernameParameter("email")
-//                .passwordParameter("password")
-//                .and().logout();
         http.csrf().disable().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
                 .and().authorizeRequests()
                 .antMatchers("/").permitAll()
@@ -77,12 +63,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/foundation/**").hasRole("FOUNDATION").anyRequest().authenticated()
                 .antMatchers("/volunteer/**").hasRole("VOLUNTEER").anyRequest().authenticated()
                 .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
         ;
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/**");
+    public void configure(WebSecurity web){
+        web.ignoring().antMatchers("/register/**");
+        web.ignoring().antMatchers("/swagger-ui.html");
     }
 }

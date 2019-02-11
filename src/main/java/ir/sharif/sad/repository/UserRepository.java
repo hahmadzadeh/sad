@@ -1,10 +1,9 @@
 package ir.sharif.sad.repository;
 
 import ir.sharif.sad.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-@Repository("userRepository")
-public interface UserRepository extends JpaRepository<User, Long> {
+
+public interface UserRepository extends CustomRepository<User, Long>, JpaSpecificationExecutor<User> {
     User findByEmail(String email);
 }

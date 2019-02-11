@@ -1,0 +1,17 @@
+// signup
+{
+    "name": "محک",
+    "address": "تهران سمت چپ",
+    "phone": "09374413070",
+    "aboutUs": "خوبیم ما"
+}
+
+// register
+{
+	"name":"محک",
+	"email":"m@g.com",
+	"password":"123"
+}
+
+//
+
