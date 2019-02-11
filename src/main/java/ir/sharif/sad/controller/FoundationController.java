@@ -98,4 +98,19 @@ public class FoundationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/read/volunteers")
+    public ResponseEntity readVolunteers(Pageable page, @RequestParam(required = false) String filter){
+        Filter filterObj = new Filter(filter);
+        return ResponseEntity.ok(foundationService.readVolunteers(page, filterObj));
+    }
+
+    @GetMapping("/read/volunteer/{id}")
+    public ResponseEntity readVolunteer(@PathVariable Integer id){
+        try {
+            return ResponseEntity.ok(foundationService.readOneVolunteer(id));
+        } catch (EntityNotExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

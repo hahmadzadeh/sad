@@ -39,16 +39,18 @@ public class VolunteerService {
     private final ProfessionRepository professionRepository;
     private final PaymentRepository paymentRepository;
     private final RequestRepository requestRepository;
+    private final FoundationRepository foundationRepository;
 
     @Autowired
     public VolunteerService(VolunteerRepository volunteerRepository, ProjectRepository projectRepository
-            , CharityRepository charityRepository, ProfessionRepository professionRepository, PaymentRepository paymentRepository, RequestRepository requestRepository) {
+            , CharityRepository charityRepository, ProfessionRepository professionRepository, PaymentRepository paymentRepository, RequestRepository requestRepository, FoundationRepository foundationRepository) {
         this.volunteerRepository = volunteerRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
         this.professionRepository = professionRepository;
         this.paymentRepository = paymentRepository;
         this.requestRepository = requestRepository;
+        this.foundationRepository = foundationRepository;
     }
 
 
@@ -250,5 +252,15 @@ public class VolunteerService {
                 .map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
         PageImpl<VolunteerRequestDto> ans = new PageImpl<>(collect, page, collect.size());
         return ans;
+    }
+
+    public List<ProfessionDto> readProfessions() {
+        return professionRepository.findAll().parallelStream().map(ProfessionDto::profession2ProfessionDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<FoundationDto> readFoundations() {
+        return foundationRepository.findAll().parallelStream()
+                .map(FoundationDto::Foundation2FoundationDto).collect(Collectors.toList());
     }
 }

@@ -128,4 +128,15 @@ public class VolunteerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/read/professions")
+    public ResponseEntity readProfessions(){
+        return ResponseEntity.ok(volunteerService.readProfessions());
+    }
+
+    @GetMapping("/read/foundations")
+    public ResponseEntity readFoundations(){
+        return ResponseEntity.ok(volunteerService.readFoundations());
+    }
+
 }

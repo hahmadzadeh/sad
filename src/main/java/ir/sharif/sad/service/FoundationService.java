@@ -1,9 +1,6 @@
 package ir.sharif.sad.service;
 
-import ir.sharif.sad.dto.CharityDto;
-import ir.sharif.sad.dto.FoundationDto;
-import ir.sharif.sad.dto.ProjectDto;
-import ir.sharif.sad.dto.VolunteerRequestDto;
+import ir.sharif.sad.dto.*;
 import ir.sharif.sad.entity.*;
 import ir.sharif.sad.enumerators.ProjectStatus;
 import ir.sharif.sad.enumerators.State;
@@ -31,14 +28,16 @@ public class FoundationService {
     private final ProjectRepository projectRepository;
     private final CharityRepository charityRepository;
     private final RequestRepository requestRepository;
+    private final VolunteerRepository volunteerRepository;
 
     @Autowired
-    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository, ProjectRepository projectRepository, CharityRepository charityRepository, RequestRepository requestRepository){
+    public FoundationService(FoundationRepository foundationRepository, ProfessionRepository professionRepository, ProjectRepository projectRepository, CharityRepository charityRepository, RequestRepository requestRepository, VolunteerRepository volunteerRepository){
         this.foundationRepository = foundationRepository;
         this.professionRepository = professionRepository;
         this.projectRepository = projectRepository;
         this.charityRepository = charityRepository;
         this.requestRepository = requestRepository;
+        this.volunteerRepository = volunteerRepository;
     }
 
 
@@ -162,5 +161,18 @@ public class FoundationService {
             byId.get().setState(State.APPROVED);
             return VolunteerRequestDto.volunteerRequest2VolunteerRequestDto(byId.get());
         }
+    }
+
+    public Page<VolunteerDto> readVolunteers(Pageable page, Filter filterObj) {
+        Page<Volunteer> all = volunteerRepository.findAll(filterObj.getSpecified(), page);
+        List<VolunteerDto> collect = all.get().map(VolunteerDto::volunteer2VolunteerDto).collect(Collectors.toList());
+        return new PageImpl<>(collect, page, all.getSize());
+    }
+
+    public VolunteerDto readOneVolunteer(Integer id) throws EntityNotExistException {
+        Optional<Volunteer> byId = volunteerRepository.findById(id);
+        if(!byId.isPresent())
+            throw new EntityNotExistException("volunteer is not found");
+        return VolunteerDto.volunteer2VolunteerDto(byId.get());
     }
 }

@@ -24,7 +24,7 @@ public class VolunteerDto {
     private String interests;
     @NonNull
     private List<String> professions;
-
+    private int volunteerId;
     public static VolunteerDto volunteer2VolunteerDto(Volunteer volunteer){
         VolunteerDto volunteerDto = new VolunteerDto();
         volunteerDto.name = volunteer.getName();
@@ -37,6 +37,7 @@ public class VolunteerDto {
         volunteerDto.interests = volunteer.getInterests();
         volunteerDto.professions = volunteer.getProfessions().parallelStream()
                 .map(Profession::getName).collect(Collectors.toList());
+        volunteerDto.volunteerId = volunteer.getId();
         return volunteerDto;
     }
 }
