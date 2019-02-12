@@ -8,12 +8,14 @@ import ir.sharif.sad.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RepositoryRestController
 @RequestMapping("/register")
+@CrossOrigin(origins = "*")
 public class RegistrationController {
     private final UserService userService;
 

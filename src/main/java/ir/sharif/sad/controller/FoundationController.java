@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RepositoryRestController
 @Secured("ROLE_FOUNDATION")
 @RequestMapping("/foundation/")
+@CrossOrigin(origins = "*")
 public class FoundationController {
     private FoundationService foundationService;
 

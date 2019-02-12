@@ -17,6 +17,7 @@ import javax.swing.text.html.parser.Entity;
 
 @RepositoryRestController
 @RequestMapping("/login/")
+@CrossOrigin(origins = "*")
 public class LoginController {
     @PostMapping(value = "/foundation")
     @Secured("ROLE_FOUNDATION")

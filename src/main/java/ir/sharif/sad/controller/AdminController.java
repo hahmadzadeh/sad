@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Secured("ROLE_ADMIN")
 @RequestMapping("/admin/")
+@CrossOrigin(origins = "*")
 public class AdminController {
     private final AdminService adminService;
 

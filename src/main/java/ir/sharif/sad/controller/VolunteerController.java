@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RepositoryRestController
 @Secured("ROLE_VOLUNTEER")
 @RequestMapping("/volunteer/")
+@CrossOrigin(origins = "*")
 public class VolunteerController {
     private VolunteerService volunteerService;
 
