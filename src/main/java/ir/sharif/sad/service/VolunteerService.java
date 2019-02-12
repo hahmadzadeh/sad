@@ -57,12 +57,12 @@ public class VolunteerService {
     public Volunteer save(VolunteerDto volunteerDto, String name) throws VolunteerExistException {
         Optional<Volunteer> byEmail = volunteerRepository.findOneByEmail(name);
         if (byEmail.isPresent()) {
-            logger.error("volunteer already signed up");
-            throw new VolunteerExistException("volunteer exists");
+            logger.error("volunteer" + name +  "already signed up");
+            throw new VolunteerExistException("volunteer" + name + "exists");
         }
         Volunteer volunteer = new Volunteer(volunteerDto, name);
         volunteerRepository.save(volunteer);
-        logger.info("create new volunteer");
+        logger.info("create new volunteer:" + volunteer.getId());
         return volunteer;
     }
 
@@ -72,6 +72,7 @@ public class VolunteerService {
                 .filter(e -> professionRepository.findByName(e).isPresent());
         professionDtoStream.forEach(e -> volunteer.getProfessions()
                 .add(professionRepository.findByName(e).get()));
+        logger.info("fill abilities for volunteer:" + volunteer.getId());
         return volunteer;
     }
 
@@ -86,6 +87,7 @@ public class VolunteerService {
                 .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
         List<ProjectDto> collect = all.get().map(ProjectDto::project2ProjectDto).collect(Collectors.toList());
         PageImpl<ProjectDto> projectDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        logger.info("read projects");
         return projectDtos;
     }
 
@@ -105,12 +107,14 @@ public class VolunteerService {
                 if (project.getRemainingMoney() == 0) {
                     project.setStatus(ProjectStatus.FINISHED);
                 }
+                logger.info("volunteer:" + volunteer.getId() + " payed " + amount);
                 return PaymentDto.PaymentDto2Payment(payment);
             } else {
                 logger.error("Invalid amount of money(perhaps too much!!)");
                 throw new InvalidAmountException("Invalid amount of money(perhaps too much!!)");
             }
         } else {
+            logger.error("Volunteer not created please complete volunteer");
             throw new Exception("Volunteer not created please complete volunteer");
         }
     }
@@ -127,12 +131,14 @@ public class VolunteerService {
                 .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
         List<CharityDto> collect = all.get().map(CharityDto::charity2CharityDto).collect(Collectors.toList());
         PageImpl<CharityDto> charityDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        logger.info("read charities");
         return charityDtos;
     }
 
     public VolunteerDto readMyProfile(String name) throws Exception {
         Optional<Volunteer> byId = volunteerRepository.findOneByEmail(name);
         if (byId.isPresent()) {
+            logger.info("read profile for volunteer :" + name);
             return VolunteerDto.volunteer2VolunteerDto(byId.get());
         } else {
             logger.error("volunteer is not signed up yet");
@@ -150,6 +156,7 @@ public class VolunteerService {
             Set<VolunteerRequest> collect = volunteer.getVolunteerRequests().parallelStream()
                     .filter(e -> e.getCharity().getId() == charity.getId()).collect(Collectors.toSet());
             if(!collect.isEmpty()){
+                logger.error("you are already requested");
                 throw new Exception("you are already requested");
             }
             if (isQualified(volunteer, charity)) {
@@ -160,6 +167,7 @@ public class VolunteerService {
                 request.setDescription(dto.getDescription());
                 charity.getRequests().add(request);
                 volunteer.getVolunteerRequests().add(request);
+                logger.info("volunteer" + volunteer.getId() + "made request for charity: " + charity.getId());
                 return VolunteerRequestDto.volunteerRequest2VolunteerRequestDto(request);
             } else {
                 throw new Exception("volunteer is not qualified");
@@ -189,6 +197,7 @@ public class VolunteerService {
         volunteer.setPhone(volunteerDto.getPhone());
         volunteer.setProvince(volunteerDto.getProvince());
         volunteer.setProfessions(new HashSet<>());
+        logger.info("volunteer: " + volunteer.getId() + "updates his profile");
         return volunteer;
     }
 
@@ -203,6 +212,7 @@ public class VolunteerService {
         if (byId.get().getDeadLine() < current.getTime() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
             byId.get().setStatus(ProjectStatus.FINISHED);
         }
+        logger.info("read project:" + id);
         return ProjectDto.project2ProjectDto(byId.get());
     }
 
@@ -220,6 +230,7 @@ public class VolunteerService {
         List<PaymentDto> collect = all.get()
                 .map(PaymentDto::PaymentDto2Payment).collect(Collectors.toList());
         PageImpl<PaymentDto> ans = new PageImpl<PaymentDto>(collect, page, collect.size());
+        logger.info("volunteer " + volunteer.getId() + "reads his payments");
         return ans;
     }
 
@@ -234,6 +245,7 @@ public class VolunteerService {
         if (byId.get().getDeadLine() < current.getTime() && byId.get().getStatus() == ProjectStatus.NOT_FINISHED) {
             byId.get().setStatus(ProjectStatus.FINISHED);
         }
+        logger.info("read charity: " + id);
         return CharityDto.charity2CharityDto(byId.get());
     }
 
@@ -251,6 +263,7 @@ public class VolunteerService {
         List<VolunteerRequestDto> collect = all.get()
                 .map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
         PageImpl<VolunteerRequestDto> ans = new PageImpl<>(collect, page, collect.size());
+        logger.info("volunteer :" + volunteer.getId() + "read requests");
         return ans;
     }
 

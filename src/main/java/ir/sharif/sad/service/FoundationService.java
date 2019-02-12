@@ -9,6 +9,8 @@ import ir.sharif.sad.repository.*;
 import ir.sharif.sad.specification.CustomSpecification;
 import ir.sharif.sad.specification.Filter;
 import ir.sharif.sad.specification.SearchCriteria;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FoundationService {
+    private final Logger logger = LoggerFactory.getLogger(FoundationService.class);
     private FoundationRepository foundationRepository;
     private ProfessionRepository professionRepository;
     private final ProjectRepository projectRepository;
@@ -44,8 +47,10 @@ public class FoundationService {
     public FoundationDto save(FoundationDto foundationDto, String name) throws Exception {
         Optional<Foundation> oneByEmail = foundationRepository.findOneByEmail(name);
         if(oneByEmail.isPresent()){
+            logger.error("Foundation:" + name + "is already signed up");
             throw new Exception("already signed up");
         }
+        logger.info("Foundation:" + name + "registered");
         return FoundationDto.Foundation2FoundationDto(foundationRepository.save(new Foundation(foundationDto, name)));
     }
 
@@ -56,8 +61,10 @@ public class FoundationService {
             Foundation foundation = byId.get();
             Project project = new Project(projectDto, foundation);
             foundation.getProjects().add(project);
+            logger.info("Foundation: " + foundation.getId() + " creates new project");
             return ProjectDto.project2ProjectDto(project);
         }else {
+            logger.error("createProject: foundation not found");
             throw new Exception("foundation not found");
         }
     }
@@ -70,8 +77,10 @@ public class FoundationService {
             Set<Profession> professions = professionRepository.findByNameIn(charityDto.getProfessions());
             Charity charity = new Charity(charityDto, foundation, professions);
             foundation.getCharities().add(charity);
+            logger.info("Foundation :" + foundation.getId() + " creates new charities");
             return CharityDto.charity2CharityDto(charity);
         }else {
+            logger.error("createCharity: foundation not found");
             throw new Exception("foundation not found");
         }
     }
@@ -92,6 +101,7 @@ public class FoundationService {
         foundation.setAboutUs(foundationDto.getAboutUs());
         foundation.setAddress(foundationDto.getAddress());
         foundation.setPhone(foundationDto.getPhone());
+        logger.info("Foundation: " + foundation.getId() + "updated his profile");
         return FoundationDto.Foundation2FoundationDto(foundation);
     }
 
@@ -113,6 +123,7 @@ public class FoundationService {
                 .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
         List<ProjectDto> collect = all.get().map(ProjectDto::project2ProjectDto).collect(Collectors.toList());
         PageImpl<ProjectDto> projectDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        logger.info("Foundation: " + name + "read projects");
         return projectDtos;
     }
 
@@ -135,6 +146,7 @@ public class FoundationService {
                 .forEach(e -> e.setStatus(ProjectStatus.FINISHED));
         List<CharityDto> collect = all.get().map(CharityDto::charity2CharityDto).collect(Collectors.toList());
         PageImpl<CharityDto> charityDtos = new PageImpl<>(collect, page, all.getTotalElements());
+        logger.info("foundation: " + name + "asks charities");
         return charityDtos;
     }
 
@@ -144,8 +156,10 @@ public class FoundationService {
             List<VolunteerRequest> all = byId.get().getRequests();
             List<VolunteerRequestDto> collect = all.parallelStream().
                     map(VolunteerRequestDto::volunteerRequest2VolunteerRequestDto).collect(Collectors.toList());
+            logger.info("foundation: " + name + "reads his requests");
             return new PageImpl<>(collect, page, all.size());
         }else{
+            logger.error("charity is not found");
             throw new EntityNotExistException("charity is not found");
         }
     }
