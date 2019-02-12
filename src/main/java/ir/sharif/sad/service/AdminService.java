@@ -1,6 +1,8 @@
 package ir.sharif.sad.service;
 
 import ir.sharif.sad.dto.AdminUserDto;
+import ir.sharif.sad.dto.ProfessionDto;
+import ir.sharif.sad.entity.Profession;
 import ir.sharif.sad.entity.Role;
 import ir.sharif.sad.entity.User;
 import ir.sharif.sad.enumerators.Roles;
@@ -15,7 +17,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +66,11 @@ public class AdminService {
         Role userRole = roleRepository.findByRole(role.toString());
         user.setRoles(new HashSet<Role>(Collections.singletonList(userRole)));
         return userRepository.save(user);
+    }
+
+    public Profession createProfession(ProfessionDto dto){
+        Profession profession = new Profession(dto.getName(), dto.getCategory());
+        return professionRepository.save(profession);
     }
 
     public Page readAll(Pageable page, Filter filter, Class dataClass) {

@@ -1,6 +1,7 @@
 package ir.sharif.sad.controller;
 
 import ir.sharif.sad.dto.AdminUserDto;
+import ir.sharif.sad.dto.ProfessionDto;
 import ir.sharif.sad.enumerators.Roles;
 import ir.sharif.sad.repository.CharityRepository;
 import ir.sharif.sad.repository.ProjectRepository;
@@ -43,5 +44,9 @@ public class AdminController {
     public ResponseEntity readAllCharity(Pageable page, @RequestParam(required = false) String filter){
         Filter filterObj = new Filter(filter);
         return ResponseEntity.ok(adminService.readAll(page, filterObj, CharityRepository.class));
+    }
+    @PostMapping("/create/profession")
+    public ResponseEntity createProfession(@RequestBody ProfessionDto dto){
+        return ResponseEntity.ok(adminService.createProfession(dto));
     }
 }
